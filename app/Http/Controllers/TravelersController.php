@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Traveler;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,7 +36,8 @@ class TravelersController extends Controller
 
     public function dashboard(){
         $user = Auth::user();
-        $reservations = Booking::where('user_id', $user->id)->get();
+        $traveler = Traveler::where('user_id', $user->id)->first();
+        $reservations = Booking::where('traveler_id', $traveler->id)->get();
         return view('traveler.traveler-dashboard', compact('reservations'));
     }
 }

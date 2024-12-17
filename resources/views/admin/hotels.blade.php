@@ -9,26 +9,30 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Hotel</th>
                 <th>Email</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($hotels as $hotel)
-            <tr>
-                <td>{{ $hotel->id }}</td>
-                <td>{{ $hotel->name }}</td>
-                <td>{{ $hotel->email }}</td>
-                <td>
-                    <button class="btn btn-warning" onclick="editHotel({{ $hotel->id }}, '{{ $hotel->name }}', '{{ $hotel->email }}')">Editar</button>
-                    <form action="{{ route('admin.hotels.delete', $hotel) }}" method="POST" style="display:inline;" class="delete-form">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
+            @foreach($hotels as $user)
+                @foreach($user->hotels as $hotel) <!-- Iterar sobre los hoteles del usuario -->
+                <tr>
+                    <td>{{ $hotel->id }}</td>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $hotel->name }}</td>
+                    <td>{{ $hotel->location}}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editHotel({{ $hotel->id }}, '{{ $hotel->name }}', '{{ $hotel->location }}')">Editar</button>
+                        <form action="{{ route('admin.hotels.delete', $hotel) }}" method="POST" style="display:inline;" class="delete-form">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
             @endforeach
         </tbody>
     </table>

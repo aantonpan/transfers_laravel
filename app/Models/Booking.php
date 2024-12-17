@@ -19,12 +19,12 @@ class Booking extends Model
     // Relación con el hotel (Usuario con rol "hotel")
     public function hotel(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'hotel_id');
+        return $this->belongsTo(Hotel::class, 'hotel_id');
     }
 
     // Relación con el viajero (Usuario con rol "traveler")
     public function traveler(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Traveler::class, 'traveler_id');
     }
 }

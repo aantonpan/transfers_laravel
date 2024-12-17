@@ -19,12 +19,12 @@
             @foreach($bookings as $booking)
             <tr>
                 <td>{{ $booking->id }}</td>
-                <td>{{ $booking->traveler->name }}</td>
+                <td>{{ $booking->traveler->user->name }}</td>
                 <td>{{ $booking->hotel->name }}</td>
                 <td>{{ $booking->booking_date }}</td>
                 <td>
                     <button class="btn btn-warning" onclick="editBooking({{ $booking->id }}, '{{ $booking->traveler_id }}', '{{ $booking->hotel_id }}', '{{ $booking->booking_date }}')">Editar</button>
-                    <form action="{{ route('admin.bookings.destroy', $booking) }}" method="POST" style="display:inline;" class="delete-form">
+                    <form action="{{ route('admin.bookings.delete', $booking) }}" method="POST" style="display:inline;" class="delete-form">
                         @csrf
                         @method('DELETE')
                         <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Eliminar</button>

@@ -25,6 +25,8 @@ class BookingsController extends Controller
         return back()->with('success', 'Reserva actualizada correctamente.');
     }
 
+    
+
     // Eliminar reserva
     public function destroy($id)
     {

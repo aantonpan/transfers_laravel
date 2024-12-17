@@ -32,7 +32,7 @@ class Hotel extends Model
     public function getBookingsWithRelations()
     {
         return $this->bookings()
-                    ->with(['hotel', 'traveler']) // Eager loading the related models
+                    ->with(['hotel', 'traveler.user']) // Eager loading the related models
                     ->get();
     }
 }

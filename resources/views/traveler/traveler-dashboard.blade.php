@@ -21,7 +21,7 @@
             <tr>
                 <td>{{ $reservation->id }}</td>
                 <td>{{ $reservation->hotel->name }}</td>
-                <td>{{ $reservation->hotel->email }}</td>
+                <td>{{ $reservation->hotel->location }}</td>
                 <td>{{ $reservation->booking_date }}</td>
             </tr>
             @empty

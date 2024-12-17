@@ -51,11 +51,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('/travelers/{id}', [AdminController::class, 'deleteUser'])->name('admin.travelers.delete');
         
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
+        Route::put('/bookings/{id}', [BookingsController::class, 'update'])->name('admin.bookings.update');
+        Route::delete('/bookings/{id}', [BookingsController::class, 'destroy'])->name('admin.bookings.delete');
+       
     });
 
     // Rutas para hoteles
     Route::prefix('hotel')->group(function () {
         Route::get('/dashboard', [HotelsController::class, 'dashboard'])->name('hotel.dashboard');
+        Route::get('/reservations', [HotelsController::class, 'reservations'])->name('hotel.reservations');
     });
 
     // Rutas para viajeros
