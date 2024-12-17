@@ -44,7 +44,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/hotels', [AdminController::class, 'hotels'])->name('admin.hotels');
         Route::get('/travelers', [AdminController::class, 'travelers'])->name('admin.travelers');
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
-        Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+        Route::delete('/travelers/{id}', [AdminController::class, 'deleteUser'])->name('admin.travelers.delete');
+        Route::put('/travelers/{id}', [TravelersController::class, 'update'])->name('admin.travelers.update');
     });
 
     // Rutas para hoteles

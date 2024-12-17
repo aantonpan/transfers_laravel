@@ -22,7 +22,7 @@
                 <td>{{ $traveler->email }}</td>
                 <td>
                     <button class="btn btn-warning" onclick="editTraveler({{ $traveler->id }}, '{{ $traveler->name }}', '{{ $traveler->email }}')">Editar</button>
-                    <form action="{{ route('admin.travelers.destroy', $traveler) }}" method="POST" style="display:inline;" class="delete-form">
+                    <form action="{{ route('admin.travelers.delete', $traveler->id) }}" method="POST" style="display:inline;" class="delete-form">
                         @csrf
                         @method('DELETE')
                         <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Eliminar</button>
@@ -37,8 +37,8 @@
 <!-- Modal Editar -->
 <div class="modal fade" id="editTravelerModal" tabindex="-1" aria-labelledby="editTravelerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form id="editTravelerForm" method="POST">
-            @csrf
+    <form id="editTravelerForm" method="POST">
+    @csrf
             @method('PUT')
             <div class="modal-content">
                 <div class="modal-header">
@@ -64,7 +64,7 @@
 <script>
     function editTraveler(id, name, email) {
         const form = document.getElementById('editTravelerForm');
-        form.action = `/admin/travelers/${id}`;
+        form.action = "{{ route('admin.travelers.update', '') }}/" + id;
         document.getElementById('traveler_name').value = name;
         document.getElementById('traveler_email').value = email;
         new bootstrap.Modal(document.getElementById('editTravelerModal')).show();
