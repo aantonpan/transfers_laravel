@@ -22,7 +22,7 @@
                 <td>{{ $hotel->email }}</td>
                 <td>
                     <button class="btn btn-warning" onclick="editHotel({{ $hotel->id }}, '{{ $hotel->name }}', '{{ $hotel->email }}')">Editar</button>
-                    <form action="{{ route('admin.hotels.destroy', $hotel) }}" method="POST" style="display:inline;" class="delete-form">
+                    <form action="{{ route('admin.hotels.delete', $hotel) }}" method="POST" style="display:inline;" class="delete-form">
                         @csrf
                         @method('DELETE')
                         <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Eliminar</button>

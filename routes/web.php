@@ -41,11 +41,16 @@ Route::middleware('auth')->group(function () {
     // Rutas para el administrador
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
         Route::get('/hotels', [AdminController::class, 'hotels'])->name('admin.hotels');
+        Route::put('/hotels/{id}', [HotelsController::class, 'update'])->name('admin.hotels.update');
+        Route::delete('/hotels/{id}', [AdminController::class, 'deleteUser'])->name('admin.hotels.delete');
+        
         Route::get('/travelers', [AdminController::class, 'travelers'])->name('admin.travelers');
-        Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
-        Route::delete('/travelers/{id}', [AdminController::class, 'deleteUser'])->name('admin.travelers.delete');
         Route::put('/travelers/{id}', [TravelersController::class, 'update'])->name('admin.travelers.update');
+        Route::delete('/travelers/{id}', [AdminController::class, 'deleteUser'])->name('admin.travelers.delete');
+        
+        Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
     });
 
     // Rutas para hoteles
