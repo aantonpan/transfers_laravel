@@ -6,6 +6,7 @@ use App\Http\Controllers\HotelsController;
 use App\Http\Controllers\BookingsController;
 use App\Http\Controllers\TravelersController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 
 // Página principal - Landing Page
 Route::get('/', function () {
@@ -21,17 +22,19 @@ Route::prefix('login')->group(function () {
     Route::post('hotel', [LoginController::class, 'login'])->name('hotel.login.post');
     Route::post('traveler', [LoginController::class, 'login'])->name('traveler.login.post');
     Route::post('admin', [LoginController::class, 'login'])->name('admin.login.post');
+    
+
+});
+Route::prefix('register')->group(function () {
+    Route::get('hotel', [RegisterController::class, 'showHotelRegisterForm'])->name('register.hotel'); // Mostrar el formulario
+    Route::get('traveler', [RegisterController::class, 'showHotelRegisterForm'])->name('register.traveler'); // Mostrar el formulario
+    
+    Route::post('hotel', [RegisterController::class, 'register'])->name('hotel.register'); // Procesar el registro
+    Route::post('traveler', [RegisterController::class, 'register'])->name('traveler.register'); // Procesar el registro
 });
 
-// Rutas para los registros
-Route::prefix('register')->group(function () {
-    Route::get('hotel', function () {
-        return view('auth.register.register-hotel');
-    })->name('register.hotel');
-    Route::get('traveler', function () {
-        return view('auth.register.register-traveler');
-    })->name('register.traveler');
-});
+Route::get('/traveler/passport', [RegisterController::class, 'showPassportForm'])->name('traveler.passport.form');
+Route::post('/traveler/passport', [RegisterController::class, 'storePassport'])->name('traveler.savePassport');
 
 // Ruta para cerrar sesión
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
