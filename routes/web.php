@@ -73,12 +73,12 @@ Route::resource('bookings', BookingsController::class)->only([
     'index', 'update', 'destroy'
 ]);
 
-Route::get('/hotel/dashboard', function () {
-    if (Auth::check() && Auth::user()->role === 'hotel') {
-        $reservations = Auth::user()->hotelBookings; // Cargar reservas
-        return view('hotels.dashboard', compact('reservations'));
-    }
+// Route::get('/hotel/dashboard', function () {
+//     if (Auth::check() && Auth::user()->role === 'hotel') {
+//         $reservations = Auth::user()->hotelBookings; // Cargar reservas
+//         return view('hotels.dashboard', compact('reservations'));
+//     }
 
-    // Si no cumple la condición, redirige a la página principal
-    return redirect()->route('welcome')->withErrors(['error' => 'Acceso denegado.']);
-})->middleware('auth')->name('hotel.dashboard');
+//     // Si no cumple la condición, redirige a la página principal
+//     return redirect()->route('welcome')->withErrors(['error' => 'Acceso denegado.']);
+// })->middleware('auth')->name('hotel.dashboard');

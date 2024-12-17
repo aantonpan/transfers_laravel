@@ -41,7 +41,10 @@
                             </span>
                         </li>
                         <li class="nav-item">
-                            <span class="nav-link text-danger fw-bold">Cerrar sesión</span>
+                        <form method="post" action="/logout">
+                            @csrf
+                            <button class="nav-link text-danger fw-bold">Cerrar sesión</button>
+                        </form>
                         </li>
                     @endauth
                 </ul>

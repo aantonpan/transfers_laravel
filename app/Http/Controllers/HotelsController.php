@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Models\Hotel;
 use Illuminate\Support\Facades\Auth;
 
 class HotelsController extends Controller
@@ -20,8 +21,17 @@ class HotelsController extends Controller
     {
         // Verificar si el usuario está autenticado y tiene el rol adecuado
         if (Auth::check() && Auth::user()->role === 'hotel') {
-            $reservations = Auth::user()->hotelBookings; // Obtener las reservas asociadas
-            return view('hotels.dashboard', compact('reservations'));
+            $hotels = Hotel::where('user_id', Auth::user()->id)->get();
+            $reservations = [];
+            foreach ($hotels as $key => $value) {
+                $bookings = $value->getBookingsWithRelations();
+                
+                foreach ($bookings as $key => $value) {
+                    array_push($reservations, $value);
+                }
+               
+            }
+            return view('hotel.hotel-dashboard', compact('reservations'));
         }
 
         // Si no tiene acceso, redirigir con error

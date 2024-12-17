@@ -28,4 +28,11 @@ class Hotel extends Model
     {
         return $this->hasMany(Booking::class, 'hotel_id');
     }
+
+    public function getBookingsWithRelations()
+    {
+        return $this->bookings()
+                    ->with(['hotel', 'traveler']) // Eager loading the related models
+                    ->get();
+    }
 }

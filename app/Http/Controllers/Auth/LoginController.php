@@ -40,20 +40,21 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         // Validar los datos ingresados
-        $request->validate([
+        $validateData = $request->validate([
             'email' => 'required|email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:4',
         ]);
 
         // Verificar si el usuario existe
         $user = User::where('email', $request->email)->first();
-
+        
         if (!$user) {
             return back()->withErrors(['error' => 'El correo electrónico no está registrado.'])->withInput();
         }
 
         // Verificar si la contraseña es válida
-        if (!Hash::check($request->password, $user->password)) {
+        // if (!Hash($request->password, $user->password)) {
+        if (!($request->password == $user->password)) {
             return back()->withErrors(['error' => 'La contraseña es incorrecta.'])->withInput();
         }
 

@@ -25,6 +25,6 @@ class Booking extends Model
     // Relación con el viajero (Usuario con rol "traveler")
     public function traveler(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'traveler_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

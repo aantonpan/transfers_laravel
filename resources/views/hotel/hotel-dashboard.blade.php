@@ -22,7 +22,7 @@
                 <td>{{ $reservation->id }}</td>
                 <td>{{ $reservation->traveler->name }}</td>
                 <td>{{ $reservation->traveler->email }}</td>
-                <td>{{ $reservation->booking_date }}</td>
+                <td>{{ $reservation->check_in }}</td>
             </tr>
             @empty
             <tr>

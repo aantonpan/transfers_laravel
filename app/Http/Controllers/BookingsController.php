@@ -12,7 +12,7 @@ class BookingsController extends Controller
     // Mostrar listado de reservas
     public function index()
     {
-        $bookings = Booking::with(['hotel', 'traveler'])->get();
+        $bookings = Booking::with(['hotel', 'user'])->get();
         return view('admin.bookings', compact('bookings'));
     }
 
@@ -20,7 +20,7 @@ class BookingsController extends Controller
     public function update(Request $request, $id)
     {
         $reservation = Booking::findOrFail($id);
-        $reservation->update($request->only(['hotel_id', 'traveler_id', 'booking_date']));
+        $reservation->update($request->only(['hotel_id', 'user_id', 'booking_date']));
 
         return back()->with('success', 'Reserva actualizada correctamente.');
     }

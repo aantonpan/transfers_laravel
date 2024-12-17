@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class TravelersController extends Controller
 {
@@ -28,5 +31,11 @@ class TravelersController extends Controller
     {
         User::findOrFail($id)->delete();
         return back()->with('success', 'Viajero eliminado correctamente.');
+    }
+
+    public function dashboard(){
+        $user = Auth::user();
+        $reservations = Booking::where('user_id', $user->id)->get();
+        return view('traveler.traveler-dashboard', compact('reservations'));
     }
 }
