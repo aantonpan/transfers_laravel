@@ -66,4 +66,29 @@ class HotelsController extends Controller
         return back()->with('success', 'Hotel eliminado correctamente.');
     }
 
+// Mostrar el formulario para agregar un nuevo hotel
+public function create()
+{
+    return view('hotel/hotel-createHotel');
+}
+
+// Guardar el nuevo hotel en la base de datos
+public function store(Request $request)
+{
+    // Validar los datos del formulario
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'location' => 'required|string|max:255',
+    ]);
+
+    // Crear el nuevo hotel y asociarlo al usuario autenticado (si se requiere)
+    $hotel = new Hotel();
+    $hotel->name = $request->name;
+    $hotel->location = $request->location;
+    $hotel->user_id = Auth::id();  // Asocia el hotel con el usuario autenticado
+    $hotel->save();
+
+    return redirect()->route('hotel.dashboard')->with('success', 'Nuevo hotel añadido con éxito.');
+}
+
 }

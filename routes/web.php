@@ -63,6 +63,12 @@ Route::middleware('auth')->group(function () {
     Route::prefix('hotel')->group(function () {
         Route::get('/dashboard', [HotelsController::class, 'dashboard'])->name('hotel.dashboard');
         Route::get('/reservations', [HotelsController::class, 'reservations'])->name('hotel.reservations');
+        Route::get('/createHotel', [HotelsController::class, 'create'])->name('hotel.createHotel');
+    
+        // Ruta para almacenar la nueva reserva
+        Route::post('/createHotel', [HotelsController::class, 'store'])->name('hotel.CreateHotel.store');
+    
+   
     });
 
     // Rutas para viajeros
