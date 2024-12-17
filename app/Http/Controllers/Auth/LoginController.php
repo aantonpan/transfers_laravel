@@ -51,10 +51,10 @@ class LoginController extends Controller
         if (!$user) {
             return back()->withErrors(['error' => 'El correo electrónico no está registrado.'])->withInput();
         }
-
+        $hashedinput = Hash::make($request->password);
         // Verificar si la contraseña es válida
         // if (!Hash($request->password, $user->password)) {
-        if (!($request->password == $user->password)) {
+        if (!$hashedinput== $user->password) {
             return back()->withErrors(['error' => 'La contraseña es incorrecta.'])->withInput();
         }
 

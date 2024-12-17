@@ -11,8 +11,8 @@
                 <th>ID</th>
                 <th>Usuario</th>
                 <th>Hotel</th>
-                <th>Email</th>
-                <th>Acciones</th>
+                <th>Ubicación</th>
+                <th> </th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +36,11 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{{ url('admin/dashboard') }}" class="btn btn-secondary">Volver atrás</a>
+     </div>
+     
 </div>
 
 <!-- Modal Editar -->
@@ -52,8 +57,8 @@
                 <div class="modal-body">
                     <label for="hotel_name">Nombre:</label>
                     <input type="text" id="hotel_name" name="name" class="form-control" required>
-                    <label for="hotel_email" class="mt-2">Email:</label>
-                    <input type="email" id="hotel_email" name="email" class="form-control" required>
+                    <label for="hotel_ubicacion">Ubicación:</label>
+                    <input type="text" id="hotel_ubicacion" name="ubicacion" class="form-control" required>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -66,11 +71,11 @@
 
 @push('scripts')
 <script>
-    function editHotel(id, name, email) {
+    function editHotel(id, name, ubicacion) {
         const form = document.getElementById('editHotelForm');
         form.action = `/admin/hotels/${id}`;
         document.getElementById('hotel_name').value = name;
-        document.getElementById('hotel_email').value = email;
+        document.getElementById('hotel_ubicacion').value = ubicacion;
         new bootstrap.Modal(document.getElementById('editHotelModal')).show();
     }
 

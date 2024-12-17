@@ -32,6 +32,11 @@
             @endforeach
         </tbody>
     </table>
+    <div class="d-flex justify-content-center gap-3">
+        <!-- Botón para añadir nuevo hotel -->
+            <a href="{{ url('register/admin') }}" class="btn btn-success ml-3">Añadir nuevo usuario</a>
+    <a href="{{ url('admin/dashboard') }}" class="btn btn-secondary">Volver atrás</a>
+     </div>
 </div>
 
 <!-- Modal Editar -->

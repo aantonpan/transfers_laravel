@@ -28,13 +28,15 @@ Route::prefix('login')->group(function () {
 Route::prefix('register')->group(function () {
     Route::get('hotel', [RegisterController::class, 'showHotelRegisterForm'])->name('register.hotel'); // Mostrar el formulario
     Route::get('traveler', [RegisterController::class, 'showHotelRegisterForm'])->name('register.traveler'); // Mostrar el formulario
+    Route::get('admin', [RegisterController::class, 'showHotelRegisterForm'])->name('register.admin'); // Mostrar el formulario
     
     Route::post('hotel', [RegisterController::class, 'register'])->name('hotel.register'); // Procesar el registro
     Route::post('traveler', [RegisterController::class, 'register'])->name('traveler.register'); // Procesar el registro
+    Route::post('admin', [RegisterController::class, 'register'])->name('admin.register'); // Procesar el registro
 });
 
 Route::get('/traveler/passport', [RegisterController::class, 'showPassportForm'])->name('traveler.passport.form');
-Route::post('/traveler/passport', [RegisterController::class, 'storePassport'])->name('traveler.savePassport');
+Route::post('/traveler/passport', [RegisterController::class, 'storePassport'])->name('traveler.passport.store');
 
 // Ruta para cerrar sesión
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -53,20 +55,25 @@ Route::middleware('auth')->group(function () {
         Route::put('/travelers/{id}', [TravelersController::class, 'update'])->name('admin.travelers.update');
         Route::delete('/travelers/{id}', [AdminController::class, 'deleteUser'])->name('admin.travelers.delete');
         
+
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
         Route::put('/bookings/{id}', [BookingsController::class, 'update'])->name('admin.bookings.update');
         Route::delete('/bookings/{id}', [BookingsController::class, 'destroy'])->name('admin.bookings.delete');
-       
+        Route::get('/bookings/createReservation', [AdminController::class, 'createReservation'])->name('admin.createReservation');
+        Route::post('/bookings/createReservation', [AdminController::class, 'storeReservation'])->name('admin.createReservation.store');
+    
     });
 
     // Rutas para hoteles
     Route::prefix('hotel')->group(function () {
         Route::get('/dashboard', [HotelsController::class, 'dashboard'])->name('hotel.dashboard');
         Route::get('/reservations', [HotelsController::class, 'reservations'])->name('hotel.reservations');
-        Route::get('/createHotel', [HotelsController::class, 'create'])->name('hotel.createHotel');
-    
+        Route::get('/createHotel', [HotelsController::class, 'createHotel'])->name('hotel.createHotel');
+        Route::get('/reservations/createReservation', [HotelsController::class, 'createReservation'])->name('hotel.createReservation');
+        
         // Ruta para almacenar la nueva reserva
-        Route::post('/createHotel', [HotelsController::class, 'store'])->name('hotel.CreateHotel.store');
+        Route::post('/createHotel', [HotelsController::class, 'storeHotel'])->name('hotel.CreateHotel.store');
+        Route::post('/reservations/createReservation', [HotelsController::class, 'storeReservation'])->name('hotel.createReservation.store');
     
    
     });

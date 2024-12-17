@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Traveler;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Hotel;
@@ -50,13 +51,22 @@ class HotelsController extends Controller
     }
 
 
-    // Actualizar información del hotel
     public function update(Request $request, $id)
     {
-        $hotel = User::findOrFail($id);
-        $hotel->update($request->only(['name', 'email']));
-
-        return back()->with('success', 'Hotel actualizado correctamente.');
+        // Validar los datos
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'ubicacion' => 'required|string|max:255',
+        ]);
+    
+        // Buscar y actualizar el hotel
+        $hotel = Hotel::findOrFail($id);
+        $hotel->name = $request->name;
+        $hotel->location = $request->ubicacion;
+        $hotel->save();
+    
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('admin.hotels')->with('success', 'Hotel actualizado correctamente');
     }
 
     // Eliminar hotel
@@ -67,13 +77,13 @@ class HotelsController extends Controller
     }
 
 // Mostrar el formulario para agregar un nuevo hotel
-public function create()
+public function createHotel()
 {
     return view('hotel/hotel-createHotel');
 }
 
 // Guardar el nuevo hotel en la base de datos
-public function store(Request $request)
+public function storeHotel(Request $request)
 {
     // Validar los datos del formulario
     $request->validate([
@@ -90,5 +100,36 @@ public function store(Request $request)
 
     return redirect()->route('hotel.dashboard')->with('success', 'Nuevo hotel añadido con éxito.');
 }
+// Mostrar el formulario para crear una nueva reserva
+public function createReservation()
+{
+    // Obtener todos los hoteles disponibles para la reserva
+    $user = Auth::user();
+    // Filtrar los hoteles asociados al usuario autenticado
+    $hotels = Hotel::where('user_id', $user->id)->get();
+    $travelers = Traveler::with('user')->get();
 
+    return view('hotel.hotel-createReservation', compact('hotels', 'travelers'));
+}
+
+// Almacenar la nueva reserva en la base de datos
+public function storeReservation(Request $request)
+{
+    // Validar la entrada
+    $request->validate([
+        'traveler_id' => 'required|exists:travelers,id',
+        'hotel_id' => 'required|exists:hotels,id',
+        'booking_date' => 'required|date',
+    ]);
+    
+      // Crear una nueva reserva asociada al viajero
+      $booking = new Booking();
+      $booking->traveler_id = $request->traveler_id;
+      $booking->hotel_id = $request->hotel_id;
+      $booking->booking_date = $request->booking_date;
+      $booking->save();
+
+    // Redirigir con éxito
+    return redirect()->route('hotel.dashboard')->with('success', 'Reserva creada con éxito.');
+}
 }

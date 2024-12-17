@@ -7,7 +7,12 @@
     <!-- Contenedor Flex para el botón y el H1 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Listado de reservas del usuario: {{ Auth::user()->name }}</h1>
-        <a href="{{ url('hotel/dashboard') }}" class="btn btn-primary">Listado de hoteles</a>
+        <div>
+            <a href="{{ url('hotel/dashboard') }}" class="btn btn-primary">Listado de hoteles</a>
+            <!-- Botón para añadir nuevo hotel -->
+            <a href="{{ url('hotel/reservations/createReservation') }}" class="btn btn-success ml-3">Añadir nueva reserva</a>
+        </div>
+
     </div>
     <h3>Reservas Asociadas</h3>
 

@@ -22,5 +22,7 @@
 
         <button type="submit" class="btn btn-primary">Guardar Hotel</button>
     </form>
+    <a href="{{ url('hotel/dashboard') }}" class="btn btn-secondary mt-3">Volver atrás</a>
+    
 </div>
 @endsection

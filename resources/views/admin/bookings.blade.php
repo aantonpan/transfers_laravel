@@ -9,7 +9,7 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Viajero</th>
+                <th>Usuario</th>
                 <th>Hotel</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
@@ -34,6 +34,11 @@
             @endforeach
         </tbody>
     </table>
+    <div class="d-flex justify-content-center gap-3">
+        <!-- Botón para añadir nuevo hotel -->
+            <a href="{{ url('admin/bookings/createReservation') }}" class="btn btn-success ml-3">Añadir nueva reserva</a>
+    <a href="{{ url('admin/dashboard') }}" class="btn btn-secondary">Volver atrás</a>
+     </div>
 </div>
 
 <!-- Modal Editar -->
