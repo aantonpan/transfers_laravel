@@ -4,7 +4,13 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Dashboard del Viajero: {{ Auth::user()->name }}</h1>
+    <h1 class="mb-4"></h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Reservas del Viajero: {{ Auth::user()->name }}</h1>
+        <a href="{{ url('traveler/reservation') }}" class="btn btn-primary">Crear nueva reserva</a>
+    </div>
+
     <h3>Mis Reservas</h3>
 
     <table class="table table-bordered table-striped">

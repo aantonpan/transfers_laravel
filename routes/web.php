@@ -68,6 +68,10 @@ Route::middleware('auth')->group(function () {
     // Rutas para viajeros
     Route::prefix('traveler')->group(function () {
         Route::get('/dashboard', [TravelersController::class, 'dashboard'])->name('traveler.dashboard');
+        Route::get('/reservation', [TravelersController::class, 'create'])->name('traveler.reservation.create');
+    
+        // Ruta para almacenar la nueva reserva
+        Route::post('/reservation', [TravelersController::class, 'store'])->name('traveler.reservation.store');
     });
 });
 
