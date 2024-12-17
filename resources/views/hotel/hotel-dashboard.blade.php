@@ -6,7 +6,7 @@
 <div class="container">
     <!-- Contenedor Flex para el botón y el H1 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Hoteles del usuario: {{ Auth::user()->name }}</h1>
+        <h1>Reservas en hoteles del usuario: {{ Auth::user()->name }}</h1>
         <a href="{{ url('hotel/reservations') }}" class="btn btn-primary">Listado de reservas</a>
     </div>
 
