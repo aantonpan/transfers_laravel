@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Hotel extends Model
 {
@@ -11,11 +13,19 @@ class Hotel extends Model
 
     protected $fillable = [
         'name',
-        'email',
-        'password',
+        'location',
+        'user_id', // Referencia al usuario (hotel)
     ];
 
-    protected $hidden = [
-        'password',
-    ];
+    // Relación con el usuario (hotel)
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Relación con las reservas
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'hotel_id');
+    }
 }

@@ -6,31 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        // Validar si la tabla ya existe antes de intentar crearla
         if (!Schema::hasTable('travelers')) {
             Schema::create('travelers', function (Blueprint $table) {
                 $table->id();
-                $table->string('name');
-                $table->string('email')->unique();
-                $table->string('password');
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+                $table->string('passport_number');
                 $table->timestamps();
             });
         }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        // Eliminar la tabla solo si existe
-        if (Schema::hasTable('travelers')) {
-            Schema::dropIfExists('travelers');
-        }
+        Schema::dropIfExists('travelers');
     }
 };

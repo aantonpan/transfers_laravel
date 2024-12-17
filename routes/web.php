@@ -1,52 +1,84 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HotelsController;
-use App\Http\Controllers\VehiclesController;
-use App\Http\Controllers\TravelersController;
-use App\Http\Controllers\BookingsController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\HotelsController;
+use App\Http\Controllers\BookingsController;
+use App\Http\Controllers\TravelersController;
+use App\Http\Controllers\Auth\LoginController;
 
-// Ruta principal
+// Página principal - Landing Page
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Ruta adicional para el home (redirecciona al welcome)
-Route::get('/home', function () {
-    return view('welcome');
-})->name('home');
-
 // Rutas de autenticación
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-
-// Rutas de hoteles (CRUD completo usando resource)
-Route::resource('hotels', HotelsController::class);
-
-// Rutas de vehículos (CRUD completo usando resource)
-Route::resource('vehicles', VehiclesController::class);
-
-// Rutas de viajeros (CRUD completo usando resource)
-Route::resource('travelers', TravelersController::class);
-
-// Rutas de reservas (CRUD completo usando resource)
-Route::resource('bookings', BookingsController::class);
-
-// Rutas de administración
-Route::prefix('admin')->group(function () {
-    Route::get('/', [AdminController::class, 'index'])->name('admin.index'); // Panel de administración
-    Route::get('/users', [AdminController::class, 'users'])->name('admin.users'); // Listar usuarios
-    Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings'); // Listar reservas
-    Route::get('/hotels', [AdminController::class, 'hotels'])->name('admin.hotels'); // Listar hoteles
-    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update'); // Actualizar usuario
-    Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete'); // Eliminar usuario
+Route::prefix('login')->group(function () {
+    Route::get('admin', [LoginController::class, 'showAdminLoginForm'])->name('login.admin');
+    Route::get('hotel', [LoginController::class, 'showHotelLoginForm'])->name('login.hotel');
+    Route::get('traveler', [LoginController::class, 'showTravelerLoginForm'])->name('login.traveler');
+    Route::post('/', [LoginController::class, 'login'])->name('login');
+    Route::post('hotel', [LoginController::class, 'login'])->name('hotel.login.post');
+    Route::post('traveler', [LoginController::class, 'login'])->name('traveler.login.post');
+    Route::post('admin', [LoginController::class, 'login'])->name('admin.login.post');
 });
 
-// Ruta adicional para el dashboard
-Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+// Rutas para los registros
+Route::prefix('register')->group(function () {
+    Route::get('hotel', function () {
+        return view('auth.register.register-hotel');
+    })->name('register.hotel');
+    Route::get('traveler', function () {
+        return view('auth.register.register-traveler');
+    })->name('register.traveler');
+});
+
+// Ruta para cerrar sesión
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Dashboard del usuario según su rol (autenticación obligatoria)
+Route::middleware('auth')->group(function () {
+    // Rutas para el administrador
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+        Route::get('/hotels', [AdminController::class, 'hotels'])->name('admin.hotels');
+        Route::get('/travelers', [AdminController::class, 'travelers'])->name('admin.travelers');
+        Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
+        Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+    });
+
+    // Rutas para hoteles
+    Route::prefix('hotel')->group(function () {
+        Route::get('/dashboard', [HotelsController::class, 'dashboard'])->name('hotel.dashboard');
+    });
+
+    // Rutas para viajeros
+    Route::prefix('traveler')->group(function () {
+        Route::get('/dashboard', [TravelersController::class, 'dashboard'])->name('traveler.dashboard');
+    });
+});
+
+// Rutas de recursos CRUD para hoteles
+Route::resource('hotels', HotelsController::class)->only([
+    'index', 'update', 'destroy'
+]);
+
+// Rutas de recursos CRUD para viajeros
+Route::resource('travelers', TravelersController::class)->only([
+    'index', 'update', 'destroy'
+]);
+
+// Rutas de recursos CRUD para reservas (bookings)
+Route::resource('bookings', BookingsController::class)->only([
+    'index', 'update', 'destroy'
+]);
+
+Route::get('/hotel/dashboard', function () {
+    if (Auth::check() && Auth::user()->role === 'hotel') {
+        $reservations = Auth::user()->hotelBookings; // Cargar reservas
+        return view('hotels.dashboard', compact('reservations'));
+    }
+
+    // Si no cumple la condición, redirige a la página principal
+    return redirect()->route('welcome')->withErrors(['error' => 'Acceso denegado.']);
+})->middleware('auth')->name('hotel.dashboard');

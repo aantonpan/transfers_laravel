@@ -1,39 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Gestión Transfers')</title>
-    <!-- Incluye el CSS procesado por Vite -->
-    @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
-</head>
-<body class="bg-gray-100 text-gray-900">
-    <!-- Navegación -->
-    <header class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <nav class="flex justify-between items-center py-6">
-                <a href="/" class="text-xl font-bold text-blue-600">Gestión Transfers</a>
-                <div>
-                    <a href="/login" class="text-sm text-gray-700 hover:text-gray-900">Login</a>
-                    <a href="/register" class="ml-4 text-sm text-gray-700 hover:text-gray-900">Registro</a>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <title>@yield('title', 'Isla Transfers')</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Paaji+2:wght@400..800&display=swap" rel="stylesheet">
 
-    <!-- Contenido principal -->
-    <main class="py-10">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @yield('content')
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Vite CSS y JS -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
+        <div class="container-fluid">
+            <!-- Logo e imagen -->
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Isla Transfers" class="me-2" style="height: 50px;">
+                <span class="fs-4 fw-bold" style="font-family: 'Baloo Paaji 2', cursive;">Isla Transfer</span>
+            </a>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav">
+                    @auth
+                        <li class="nav-item">
+                            <span class="nav-link fw-bold text-success">
+                                @if (Auth::user()->role === 'admin')
+                                    Administrador
+                                @elseif (Auth::user()->role === 'hotel')
+                                    Hotel
+                                @elseif (Auth::user()->role === 'traveler')
+                                    Viajero
+                                @endif
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <span class="nav-link text-danger fw-bold">Cerrar sesión</span>
+                        </li>
+                    @endauth
+                </ul>
+            </div>
         </div>
+    </nav>
+
+    <!-- Contenido -->
+    <main class="py-4">
+        @yield('content')
     </main>
 
+
     <!-- Footer -->
-    <footer class="bg-white border-t mt-10">
-        <div class="max-w-7xl mx-auto px-4 py-6 text-center">
-            <p class="text-sm text-gray-500">&copy; 2024 Gestión Transfers</p>
+    <footer class="bg-light text-center py-3">
+        <div class="container-fluid">
+            <p>&copy; 2024 PHP POWER</p>
         </div>
     </footer>
+
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @vite(['resources/js/app.js'])
+    @stack('scripts')
 </body>
 </html>

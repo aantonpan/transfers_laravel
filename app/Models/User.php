@@ -2,31 +2,27 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Los atributos que se pueden asignar en masa.
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role', // Rol del usuario (admin, hotel, traveler)
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Los atributos que deben permanecer ocultos en las respuestas.
      */
     protected $hidden = [
         'password',
@@ -34,15 +30,43 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Los atributos que deben ser casteados.
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    /**
+     * Mutador para hashear la contraseña automáticamente.
+     */
+    protected function password(): Attribute
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return Attribute::make(
+            set: fn($value) => bcrypt($value) // Hashear la contraseña automáticamente
+        );
+    }
+
+    /**
+     * Relación con hoteles.
+     */
+    public function hotels(): HasMany
+    {
+        return $this->hasMany(Hotel::class, 'user_id');
+    }
+
+    /**
+     * Relación con reservas (Bookings) como hotel.
+     */
+    public function hotelBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'hotel_id');
+    }
+
+    /**
+     * Relación con reservas (Bookings) como viajero.
+     */
+    public function travelerBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'traveler_id');
     }
 }
