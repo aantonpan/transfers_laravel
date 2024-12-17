@@ -51,30 +51,47 @@ public function create()
     return view('traveler.traveler-createReservation', compact('hotels'));
 }
 
-// Almacenar la nueva reserva en la base de datos
 public function store(Request $request)
 {
+
     // Validar la entrada
-    $request->validate([
+    $data = $request->validate([
+        'reservation_type' => 'required|string',
         'hotel_id' => 'required|exists:hotels,id',
-        'booking_date' => 'required|date',
+        'travelers_count' => 'required|integer|min:1',
+        'arrival_date' => 'nullable|date',
+        'arrival_time' => 'nullable',
+        'flight_number' => 'nullable|string',
+        'origin_airport' => 'nullable|string',
+        'flight_day' => 'nullable|date',
+        'flight_time' => 'nullable',
+        'pickup_time' => 'nullable',
+        'flight_number_return' => 'nullable|string',
     ]);
 
-     // Obtener el viajero autenticado
-     $user = Auth::user();
+    // Obtener el viajero autenticado
+    $user = Auth::user();
      
-     $traveler = Traveler::where('user_id', $user->id)->first();
-    
-    
-      // Crear una nueva reserva asociada al viajero
-      $booking = new Booking();
-      $booking->traveler_id = $traveler->id; // Asociamos al viajero actual
-      $booking->hotel_id = $request->hotel_id;
-      $booking->booking_date = $request->booking_date;
-      $booking->save();
+    $traveler = Traveler::where('user_id', $user->id)->first();
+    // Crear la reserva
+    $booking = new Booking();
+    $booking->user_id = auth()->id(); // ID del usuario logueado
+    $booking->traveler_id = $traveler->id; // Asociamos al viajero actual
+    $booking->hotel_id = $data['hotel_id'];
+    $booking->reservation_type = $data['reservation_type'];
+    $booking->travelers_count = $data['travelers_count'];
+    $booking->arrival_date = $data['arrival_date'] ?? null;
+    $booking->arrival_time = $data['arrival_time'] ?? null;
+    $booking->flight_number = $data['flight_number'] ?? null;
+    $booking->origin_airport = $data['origin_airport'] ?? null;
+    $booking->flight_day = $data['flight_day'] ?? null;
+    $booking->flight_time = $data['flight_time'] ?? null;
+    $booking->pickup_time = $data['pickup_time'] ?? null;
+    $booking->flight_number_return = $data['flight_number_return'] ?? null;
+    $booking->booking_date = now();
+    $booking->save();
 
-    // Redirigir con éxito
-    return redirect()->route('traveler.dashboard')->with('success', 'Reserva creada con éxito.');
+    return redirect()->route('traveler.dashboard')->with('success', 'Reserva creada correctamente.');
 }
 
 
