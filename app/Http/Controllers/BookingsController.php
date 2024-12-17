@@ -1,58 +1,34 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Reservation;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class BookingsController extends Controller
 {
-    // Mostrar listado de bookings
+    // Mostrar listado de reservas
     public function index()
     {
-        $bookings = Booking::all();
-        return view('bookings.index', compact('bookings'));
+        $bookings = Booking::with(['hotel', 'traveler'])->get();
+        return view('admin.bookings', compact('bookings'));
     }
 
-    // Mostrar formulario para crear un nuevo booking
-    public function create()
+    // Editar reserva
+    public function update(Request $request, $id)
     {
-        return view('bookings.create');
+        $reservation = Booking::findOrFail($id);
+        $reservation->update($request->only(['hotel_id', 'traveler_id', 'booking_date']));
+
+        return back()->with('success', 'Reserva actualizada correctamente.');
     }
 
-    // Guardar un nuevo booking
-    public function store(Request $request)
+    // Eliminar reserva
+    public function destroy($id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'hotel_id' => 'required|exists:hotels,id',
-        ]);
-
-        Booking::create($request->all());
-        return redirect()->route('bookings.index')->with('success', 'Booking creado exitosamente.');
-    }
-
-    // Mostrar formulario para editar un booking existente
-    public function edit(Booking $booking)
-    {
-        return view('bookings.edit', compact('booking'));
-    }
-
-    // Actualizar un booking existente
-    public function update(Request $request, Booking $booking)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'hotel_id' => 'required|exists:hotels,id',
-        ]);
-
-        $booking->update($request->all());
-        return redirect()->route('bookings.index')->with('success', 'Booking actualizado exitosamente.');
-    }
-
-    // Eliminar un booking
-    public function destroy(Booking $booking)
-    {
-        $booking->delete();
-        return redirect()->route('bookings.index')->with('success', 'Booking eliminado exitosamente.');
+        Booking::findOrFail($id)->delete();
+        return back()->with('success', 'Reserva eliminada correctamente.');
     }
 }

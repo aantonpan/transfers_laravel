@@ -1,11 +1,166 @@
+/* Estilos globales y de tipografía */
+body {
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
 h1, h2, h3 {
     font-family: "Baloo Paaji 2", sans-serif;
+    color: #444;
+    margin-bottom: 10px;
 }
 
-#logo {
-    font-family: "Caveat", sans-serif;
+a {
+    color: #1d72b8;
+    text-decoration: none;
 }
 
-p, a {
-    font-family: "Baloo Paaji 2", sans-serif;
+a:hover {
+    color: #125c94;
+    text-decoration: underline;
 }
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #1d72b8;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #125c94;
+}
+
+/* Estilos personalizados para el NavBar */
+.navbar {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.navbar-brand img {
+    height: 50px;
+    width: auto;
+}
+
+.navbar-brand span {
+    font-family: 'Baloo Paaji 2', cursive;
+    font-weight: 600; /* Negrita */
+    font-size: 1.5rem; /* Tamaño del texto */
+    color: #218838; /* Color oscuro para el texto */
+}
+
+.nav-link {
+    font-weight: 500; /* Peso de las letras */
+    color: #383838!important; /* Color oscuro */
+    transition: color 0.3s ease; /* Transición suave */
+}
+
+.nav-link:hover {
+    color: #28a745 !important; /* Verde para el hover */
+}
+
+.navbar a.navbar-brand,
+.navbar a.nav-link {
+    text-decoration: none; /* Elimina el subrayado */
+}
+
+.navbar a.navbar-brand:hover,
+.navbar a.nav-link:hover {
+    text-decoration: none; /* Asegura que no se subraye al hacer hover */
+}
+
+/* Estilo personalizado para los botones */
+.btn-success {
+    background-color: #28a745 !important; /* Verde */
+    border-color: #28a745 !important;
+    color: #ffffff !important; /* Letras blancas */
+    font-weight: 600; /* Letras semi-negritas */
+    font-size: 0.9rem; /* Tamaño de la fuente */
+    text-transform: uppercase; /* Letras en mayúsculas */
+    transition: background-color 0.3s ease;
+
+}
+
+.btn-success:hover {
+    background-color: #218838 !important; /* Verde más oscuro en hover */
+    border-color: #218838 !important;
+    text-decoration: none;
+}
+
+.text-primary {
+    color: #218838 !important;
+    font-weight: 700;
+}
+
+/* Centrar botones */
+.row .col-12 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .btn {
+        width: 100%; /* Botones ocuparán todo el ancho en dispositivos pequeños */
+        margin-bottom: 10px; /* Espaciado entre botones */
+    }
+}
+
+/* Ajusta el espacio entre los botones */
+.row.gx-1 {
+    gap: 40px; /* Ajusta el espacio horizontal */
+}
+
+.btn-success {
+    margin: 0; /* Elimina cualquier margen adicional */
+}
+
+
+/* Ajuste de altura mínima y alineación */
+.container {
+    min-height: 80vh;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(44, 39, 39, 0.1);
+}
+
+img {
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+
+/* Estilo para el botón de formulario */
+.btn-custom {
+    background-color: #ec6565 !important; /* Verde */
+    border-color: #ec6565 !important;
+    color: #ffffff !important; /* Letras blancas */
+    font-weight: 600; /* Letras semi-negritas */
+    font-size: 0.9rem; /* Tamaño de la fuente */
+    text-transform: uppercase; /* Letras en mayúsculas */
+    transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #cc5959 !important; /* Verde más oscuro en hover */
+    border-color: #cc5959 !important;
+    text-decoration: none;
+}
+

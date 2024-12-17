@@ -1,52 +1,48 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\Hotel;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Booking;
+use Illuminate\Support\Facades\Auth;
 
 class HotelsController extends Controller
 {
+    // Mostrar lista de hoteles
     public function index()
     {
-        $hotels = Hotel::all();
-        return view('hotels.index', compact('hotels'));
+        $hotels = User::where('role', 'hotel')->get();
+        return view('admin.hotels', compact('hotels'));
     }
 
-    public function create()
+    public function dashboard()
     {
-        return view('hotels.create');
+        // Verificar si el usuario está autenticado y tiene el rol adecuado
+        if (Auth::check() && Auth::user()->role === 'hotel') {
+            $reservations = Auth::user()->hotelBookings; // Obtener las reservas asociadas
+            return view('hotels.dashboard', compact('reservations'));
+        }
+
+        // Si no tiene acceso, redirigir con error
+        return redirect()->route('welcome')->withErrors(['error' => 'Acceso denegado: No tienes permisos.']);
     }
 
-    public function store(Request $request)
+
+    // Actualizar información del hotel
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:hotels,email',
-        ]);
+        $hotel = User::findOrFail($id);
+        $hotel->update($request->only(['name', 'email']));
 
-        Hotel::create($request->all());
-        return redirect()->route('hotels.index')->with('success', 'Hotel creado exitosamente.');
+        return back()->with('success', 'Hotel actualizado correctamente.');
     }
 
-    public function edit(Hotel $hotel)
+    // Eliminar hotel
+    public function destroy($id)
     {
-        return view('hotels.edit', compact('hotel'));
+        User::findOrFail($id)->delete();
+        return back()->with('success', 'Hotel eliminado correctamente.');
     }
 
-    public function update(Request $request, Hotel $hotel)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:hotels,email,' . $hotel->id,
-        ]);
-
-        $hotel->update($request->all());
-        return redirect()->route('hotels.index')->with('success', 'Hotel actualizado exitosamente.');
-    }
-
-    public function destroy(Hotel $hotel)
-    {
-        $hotel->delete();
-        return redirect()->route('hotels.index')->with('success', 'Hotel eliminado exitosamente.');
-    }
 }

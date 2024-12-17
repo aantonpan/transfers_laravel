@@ -1,4 +1,28 @@
+/* Panel de gestión de viajeros */
 body {
     background-color: #FBF8E2;
-    font-family: "Roboto Flex", sans-serif;
+}
+
+.traveler-dashboard h1 {
+    font-size: 2rem;
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+.traveler-dashboard p {
+    font-size: 1rem;
+    color: #555;
+}
+
+.traveler-dashboard a {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #e67e22;
+    color: #fff;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+.traveler-dashboard a:hover {
+    background-color: #d35400;
 }

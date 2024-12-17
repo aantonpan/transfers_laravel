@@ -1,0 +1,11 @@
+/* General */
+@import './general.css';
+
+/* Admin */
+@import './admin.css';
+
+/* Hotel */
+@import './hotel.css';
+
+/* Traveler */
+@import './traveler.css';

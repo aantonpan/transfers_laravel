@@ -2,65 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
+use App\Models\User;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
-use App\Models\User; // Cambia si tu modelo de usuarios tiene otro nombre
-use App\Models\Booking; // Si deseas gestionar reservas desde aquí
-use App\Models\Hotel; // Para gestionar hoteles
 
 class AdminController extends Controller
 {
-    /**
-     * Mostrar el panel de administración.
-     */
+    // Dashboard principal del administrador
     public function index()
     {
-        return view('admin.dashboard'); // Asegúrate de tener una vista en resources/views/admin/dashboard.blade.php
+        return view('admin.admin-dashboard');
     }
 
-    /**
-     * Listar todos los usuarios.
-     */
-    public function users()
-    {
-        $users = User::all();
-        return response()->json($users);
-    }
-
-    /**
-     * Listar todas las reservas.
-     */
-    public function bookings()
-    {
-        $bookings = Booking::all();
-        return response()->json($bookings);
-    }
-
-    /**
-     * Listar todos los hoteles.
-     */
+    // Listado de hoteles
     public function hotels()
     {
-        $hotels = Hotel::all();
-        return response()->json($hotels);
+        $hotels = User::where('role', 'hotel')->get();
+        return view('admin.hotels', compact('hotels'));
     }
 
-    /**
-     * Actualizar información de un usuario.
-     */
-    public function updateUser(Request $request, $id)
+    // Listado de viajeros
+    public function travelers()
     {
-        $user = User::findOrFail($id);
-        $user->update($request->all());
-        return response()->json(['message' => 'Usuario actualizado correctamente', 'user' => $user]);
+        $travelers = User::where('role', 'traveler')->get();
+        return view('admin.travelers', compact('travelers'));
     }
 
-    /**
-     * Eliminar un usuario.
-     */
+    // Listado de reservas
+    public function bookings()
+    {
+        $bookings = Booking::with(['hotel', 'traveler'])->get();
+        return view('admin.bookings', compact('bookings'));
+    }
+
+    // Eliminar usuario (hotel o viajero)
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return response()->json(['message' => 'Usuario eliminado correctamente']);
+
+        return back()->with('success', 'Usuario eliminado correctamente.');
     }
 }

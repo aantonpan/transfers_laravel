@@ -1,27 +1,27 @@
+/* Panel de administración */
 body {
     background-color: #F5FBFF;
 }
 
-p,
-label {
-    font: 1rem 'Fira Sans', sans-serif;
+.admin-dashboard h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
 }
 
-input {
-    margin: 0.4rem;
+.admin-dashboard ul {
+    list-style: none;
+    padding: 0;
 }
 
-.navbar-toggler {
-    border: none;
+.admin-dashboard ul li {
+    background: #f1f1f1;
+    margin: 5px 0;
+    padding: 10px 15px;
+    border-radius: 5px;
 }
 
-.navbar-toggler:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-@media(max-width:768px){
-    .navbar-nav > li:hover {
-        background-color: #f8f6ee;
-    }
+.admin-dashboard ul li a {
+    color: #1d72b8;
+    font-weight: bold;
 }

@@ -1,9 +1,1 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Importar estilos personalizados */
-@import './general.css';
-@import './admin.css';
-@import './hotel.css';
-@import './traveler.css';
+@import './styles.css';
