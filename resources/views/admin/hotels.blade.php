@@ -25,7 +25,7 @@
                     <td>{{ $hotel->location}}</td>
                     <td>
                         <button class="btn btn-warning" onclick="editHotel({{ $hotel->id }}, '{{ $hotel->name }}', '{{ $hotel->location }}')">Editar</button>
-                        <form action="{{ route('admin.hotels.delete', $hotel) }}" method="POST" style="display:inline;" class="delete-form">
+                        <form action="{{ route('hotel.hotels.delete', $hotel) }}" method="POST" style="display:inline;" class="delete-form">
                             @csrf
                             @method('DELETE')
                             <button type="button" class="btn btn-danger" onclick="confirmDelete(this)">Eliminar</button>
@@ -38,7 +38,7 @@
     </table>
 
     <div class="d-flex justify-content-center gap-3">
-      <a href="{{ url('admin/dashboard') }}" class="btn btn-secondary">Volver atrás</a>
+      <a href="{{ url('hotel/dashboard') }}" class="btn btn-secondary">Volver atrás</a>
      </div>
      
 </div>
@@ -73,7 +73,7 @@
 <script>
     function editHotel(id, name, ubicacion) {
         const form = document.getElementById('editHotelForm');
-        form.action = `/admin/hotels/${id}`;
+        form.action = `/hotel/hotels/${id}`;
         document.getElementById('hotel_name').value = name;
         document.getElementById('hotel_ubicacion').value = ubicacion;
         new bootstrap.Modal(document.getElementById('editHotelModal')).show();

@@ -96,7 +96,13 @@ Route::middleware('auth')->group(function () {
 
         Route::put('/profile', [HotelsController::class, 'updateProfile'])->name('hotel.updateProfile');
         Route::put('/profile/password', [HotelsController::class, 'updatePassword'])->name('hotel.updatePassword');
+        Route::put('/hotels/{id}', [HotelsController::class, 'update'])->name('hotel.hotels.update');
         
+        
+        Route::delete('/hotels/{id}', [HotelsController::class, 'destroy'])->name('hotel.hotels.delete');
+       
+
+
         Route::post('/createHotel', [HotelsController::class, 'storeHotel'])->name('hotel.CreateHotel.store');
         Route::post('/reservations/createReservation', [HotelsController::class, 'storeReservation'])->name('hotel.createReservation.store');
     

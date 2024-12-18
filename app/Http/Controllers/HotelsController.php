@@ -110,11 +110,23 @@ class HotelsController extends Controller
     }
     return back()->withErrors(['current_password' => 'La contraseña actual es incorrecta.']);
 }
+public function update(Request $request, $id)
+{
+    // Buscar el hotel por su ID
+    $hotel = Hotel::findOrFail($id);
+    // Actualizar los campos del hotel con los datos enviados
+    $hotel->update($request->only([
+        'name', 
+        'location', 
+    ]));
 
+    // Redirigir con un mensaje de éxito
+    return back()->with('success', 'Hotel actualizado correctamente.');
+}
     // Eliminar hotel
     public function destroy($id)
     {
-        User::findOrFail($id)->delete();
+        Hotel::findOrFail($id)->delete();
         return back()->with('success', 'Hotel eliminado correctamente.');
     }
 
