@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,6 @@
     <!-- Vite CSS y JS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-
 </head>
 <body>
     <!-- Header -->
@@ -26,26 +25,32 @@
                 <img src="{{ asset('images/logo.png') }}" alt="Logo Isla Transfers" class="me-2" style="height: 50px;">
                 <span class="fs-4 fw-bold" style="font-family: 'Baloo Paaji 2', cursive;">Isla Transfer</span>
             </a>
+            @if(Auth::user())
+
+            <a class="navbar-brand p-5 pt-0 pr-0 pb-0" href="/">
+                <span class="fs-8" style="font-family: 'Baloo Paaji 2', cursive;">Dashboard</span>
+            </a>
+            @endif
             <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav">
                     @auth
-                        <li class="nav-item">
-                            <span class="nav-link fw-bold text-success">
-                                @if (Auth::user()->role === 'admin')
-                                    Administrador
-                                @elseif (Auth::user()->role === 'hotel')
-                                    Hotel
-                                @elseif (Auth::user()->role === 'traveler')
-                                    Viajero
-                                @endif
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                        <form method="post" action="/logout">
-                            @csrf
-                            <button class="nav-link text-danger fw-bold">Cerrar sesión</button>
-                        </form>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <!-- Usuario y tipo de usuario -->
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ Auth::user()->name }} ({{ ucfirst(Auth::user()->role) }})
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <!-- Opción de mi perfil -->
+                            <li><a class="dropdown-item" href="{{ route('traveler.profile') }}">Mi perfil</a></li>
+                            <!-- Opción de cerrar sesión -->
+                            <li>
+                                <form method="post" action="/logout" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                     @endauth
                 </ul>
             </div>
@@ -57,14 +62,12 @@
         @yield('content')
     </main>
 
-
     <!-- Footer -->
     <footer class="bg-light text-center py-3">
         <div class="container-fluid">
             <p>&copy; 2024 PHP POWER</p>
         </div>
     </footer>
-
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

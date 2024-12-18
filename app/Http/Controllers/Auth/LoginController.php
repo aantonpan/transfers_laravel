@@ -51,28 +51,27 @@ class LoginController extends Controller
         if (!$user) {
             return back()->withErrors(['error' => 'El correo electrónico no está registrado.'])->withInput();
         }
-        $hashedinput = Hash::make($request->password);
-        // Verificar si la contraseña es válida
-        // if (!Hash($request->password, $user->password)) {
-        if (!$hashedinput== $user->password) {
-            return back()->withErrors(['error' => 'La contraseña es incorrecta.'])->withInput();
+
+        if(Hash::check($request->password, $user->password)){
+            // Autenticar al usuario
+            Auth::login($user);
+
+            // Redirigir según el rol del usuario
+            switch ($user->role) {
+                case 'admin':
+                    return redirect()->route('admin.dashboard')->with('success', 'Bienvenido Administrador.');
+                case 'hotel':
+                    return redirect()->route('hotel.dashboard')->with('success', 'Bienvenido al panel del hotel.');
+                case 'traveler':
+                    return redirect()->route('traveler.dashboard')->with('success', 'Bienvenido viajero.');
+                default:
+                    Auth::logout(); // Cerrar sesión si el rol es desconocido
+                    return redirect()->route('welcome')->withErrors(['error' => 'Rol no autorizado.']);
+            }
         }
 
-        // Autenticar al usuario
-        Auth::login($user);
-
-        // Redirigir según el rol del usuario
-        switch ($user->role) {
-            case 'admin':
-                return redirect()->route('admin.dashboard')->with('success', 'Bienvenido Administrador.');
-            case 'hotel':
-                return redirect()->route('hotel.dashboard')->with('success', 'Bienvenido al panel del hotel.');
-            case 'traveler':
-                return redirect()->route('traveler.dashboard')->with('success', 'Bienvenido viajero.');
-            default:
-                Auth::logout(); // Cerrar sesión si el rol es desconocido
-                return redirect()->route('welcome')->withErrors(['error' => 'Rol no autorizado.']);
-        }
+        return back()->withErrors(['error' => 'La contraseña es incorrecta.'])->withInput();
+    
     }
 
     /**

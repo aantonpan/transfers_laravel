@@ -51,12 +51,12 @@ class RegisterController extends Controller
             'password' => 'required|min:4|confirmed',
             'role' => 'required|in:admin,hotel,traveler',
         ]);
-
+        // echo($request->password);die;
         // Crear el usuario en la base de datos
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']), // Encriptar la contraseña
+            'password' => Hash::make($request->password), // Encriptar la contraseña
             'role' => $validatedData['role'], // Guardar el rol del usuario
         ]);
 

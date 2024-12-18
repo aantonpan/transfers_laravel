@@ -8,6 +8,7 @@ use App\Models\Hotel;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 
 class TravelersController extends Controller
@@ -20,13 +21,53 @@ class TravelersController extends Controller
     }
 
     // Actualizar información del viajero
-    public function update(Request $request, $id)
+    public function updateProfile(Request $request)
     {
-        $traveler = User::findOrFail($id);
-        $traveler->update($request->only(['name', 'email']));
+        // Validar los campos del perfil
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . Auth::id(),
+        'passport_number' => 'required|string|max:255',
+    ]);
+    
+    // Obtener el usuario autenticado
+    $user = Auth::user();
+    $traveler = Traveler::where('user_id', $user->id)->first();
 
-        return back()->with('success', 'Viajero actualizado correctamente.');
+    // Actualizar los datos del perfil
+    $user->name = $request->name;
+    $user->email = $request->email;
+
+    $traveler->passport_number = $request->passport_number;
+    
+    $user->save();
+    $traveler->save();
+
+        // Redirigir con éxito
+        return back()->with('success', 'Perfil actualizado correctamente.');
     }
+    public function updatePassword(Request $request)
+{
+    // Validar los campos de la contraseña
+    $request->validate([
+        'current_password' => 'required|string|min:4',
+        'new_password' => 'required|string|min:4',  // Asegúrate de que las contraseñas coinciden
+    ]);
+    
+    // Obtener el usuario autenticado
+    $user = Auth::user();
+    // Verificar si la contraseña actual es correcta
+    if (Hash::check($request->current_password, $user->password)) {
+        
+    // Cambiar la contraseña, asegurándote de usar Hash::make() para cifrar
+    $user->password = Hash::make($request->new_password); 
+    $user->save();
+    
+    // Redirigir con un mensaje de éxito
+    return back()->with('success', 'Contraseña actualizada correctamente.');
+    }
+    return back()->withErrors(['current_password' => 'La contraseña actual es incorrecta.']);
+}
 
     // Eliminar viajero
     public function destroy($id)
@@ -41,6 +82,17 @@ class TravelersController extends Controller
         $reservations = Booking::where('traveler_id', $traveler->id)->get();
         return view('traveler.traveler-dashboard', compact('reservations'));
     }
+    public function profile()
+    {
+        // Obtener el usuario logueado
+        $user = Auth::user();
+
+        // Obtener el viajero asociado al usuario
+        $traveler = Traveler::where('user_id', $user->id)->first();
+        // Retornar la vista con los datos del viajero
+        return view('profile.travelerProfile', compact('traveler', 'user'));
+    }
+
 
 // Mostrar el formulario para crear una nueva reserva
 public function create()

@@ -7,10 +7,25 @@ use App\Http\Controllers\BookingsController;
 use App\Http\Controllers\TravelersController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use Illuminate\Support\Facades\Auth;
 
 // Página principal - Landing Page
 Route::get('/', function () {
-    return view('welcome');
+    $user = Auth::user();
+    if (!$user){
+        return view('welcome');
+    }
+    switch ($user->role) {
+        case 'admin':
+            return redirect()->route('admin.dashboard')->with('success', 'Bienvenido Administrador.');
+        case 'hotel':
+            return redirect()->route('hotel.dashboard')->with('success', 'Bienvenido al panel del hotel.');
+        case 'traveler':
+            return redirect()->route('traveler.dashboard')->with('success', 'Bienvenido viajero.');
+        default:
+            Auth::logout(); // Cerrar sesión si el rol es desconocido
+            return redirect()->route('welcome')->withErrors(['error' => 'Rol no autorizado.']);
+    }
 })->name('welcome');
 
 // Rutas de autenticación
@@ -82,7 +97,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix('traveler')->group(function () {
         Route::get('/dashboard', [TravelersController::class, 'dashboard'])->name('traveler.dashboard');
         Route::get('/reservation', [TravelersController::class, 'create'])->name('traveler.reservation.create');
-    
+        Route::get('/profile', [TravelersController::class, 'profile'])->name('traveler.profile');
+
+        Route::put('/profile', [TravelersController::class, 'updateProfile'])->name('traveler.updateProfile');
+        Route::put('/profile/password', [TravelersController::class, 'updatePassword'])->name('traveler.updatePassword');
         // Ruta para almacenar la nueva reserva
         Route::post('/reservation', [TravelersController::class, 'store'])->name('traveler.reservation.store');
     });

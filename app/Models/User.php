@@ -37,16 +37,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * Mutador para hashear la contraseña automáticamente.
-     */
-    protected function password(): Attribute
-    {
-        return Attribute::make(
-            set: fn($value) => bcrypt($value) // Hashear la contraseña automáticamente
-        );
-    }
-
-    /**
      * Relación con hoteles.
      */
     public function hotels(): HasMany
@@ -67,6 +57,6 @@ class User extends Authenticatable
      */
     public function travelerBookings(): HasMany
     {
-        return $this->hasMany(Booking::class, 'user_id');
+        return $this->hasMany(Booking::class, 'traveler_id');
     }
 }
