@@ -74,7 +74,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('admin.bookings');
         Route::put('/bookings/{id}', [BookingsController::class, 'update'])->name('admin.bookings.update');
         Route::delete('/bookings/{id}', [BookingsController::class, 'destroy'])->name('admin.bookings.delete');
+        
         Route::get('/bookings/createReservation', [AdminController::class, 'createReservation'])->name('admin.createReservation');
+        Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+
+        Route::put('/profile', [AdminController::class, 'updateProfile'])->name('admin.updateProfile');
+        Route::put('/profile/password', [AdminController::class, 'updatePassword'])->name('admin.updatePassword');
+        
+        
         Route::post('/bookings/createReservation', [AdminController::class, 'storeReservation'])->name('admin.createReservation.store');
     
     });
@@ -85,8 +92,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/reservations', [HotelsController::class, 'reservations'])->name('hotel.reservations');
         Route::get('/createHotel', [HotelsController::class, 'createHotel'])->name('hotel.createHotel');
         Route::get('/reservations/createReservation', [HotelsController::class, 'createReservation'])->name('hotel.createReservation');
+        Route::get('/profile', [HotelsController::class, 'profile'])->name('hotel.profile');
+
+        Route::put('/profile', [HotelsController::class, 'updateProfile'])->name('hotel.updateProfile');
+        Route::put('/profile/password', [HotelsController::class, 'updatePassword'])->name('hotel.updatePassword');
         
-        // Ruta para almacenar la nueva reserva
         Route::post('/createHotel', [HotelsController::class, 'storeHotel'])->name('hotel.CreateHotel.store');
         Route::post('/reservations/createReservation', [HotelsController::class, 'storeReservation'])->name('hotel.createReservation.store');
     

@@ -9,6 +9,7 @@ use App\Models\Hotel;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -38,6 +39,66 @@ class AdminController extends Controller
         $bookings = Booking::with(['hotel', 'traveler'])->get();
         return view('admin.bookings', compact('bookings'));
     }
+
+    public function profile()
+    {
+        // Obtener el usuario logueado
+        $user = Auth::user();
+
+        // Obtener el viajero asociado al usuario
+        $traveler = Traveler::where('user_id', $user->id)->first();
+        // Retornar la vista con los datos del viajero
+        return view('profile.adminProfile', compact('traveler', 'user'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        // Validar los campos del perfil
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . Auth::id(),
+        'name' => 'required|string|max:255',
+    ]);
+    
+    // Obtener el usuario autenticado
+    $user = Auth::user();
+    
+    $hotels = Hotel::where('user_id', $user->id)->get();
+
+    // Actualizar los datos del perfil
+    $user->name = $request->name;
+    $user->email = $request->email;
+
+    
+    
+    $user->save();
+    
+
+        // Redirigir con éxito
+        return back()->with('success', 'Perfil actualizado correctamente.');
+    }
+    public function updatePassword(Request $request)
+{
+    // Validar los campos de la contraseña
+    $request->validate([
+        'current_password' => 'required|string|min:4',
+        'new_password' => 'required|string|min:4',  // Asegúrate de que las contraseñas coinciden
+    ]);
+    
+    // Obtener el usuario autenticado
+    $user = Auth::user();
+    // Verificar si la contraseña actual es correcta
+    if (Hash::check($request->current_password, $user->password)) {
+        
+    // Cambiar la contraseña, asegurándote de usar Hash::make() para cifrar
+    $user->password = Hash::make($request->new_password); 
+    $user->save();
+    
+    // Redirigir con un mensaje de éxito
+    return back()->with('success', 'Contraseña actualizada correctamente.');
+    }
+    return back()->withErrors(['current_password' => 'La contraseña actual es incorrecta.']);
+}
 
     // Eliminar usuario (hotel o viajero)
     public function deleteUser($id)

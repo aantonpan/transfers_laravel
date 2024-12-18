@@ -4,36 +4,54 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4"></h1>
+    <h1 class="mb-4">Dashboard del Viajero: {{ Auth::user()->name }}</h1>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Reservas del Viajero: {{ Auth::user()->name }}</h1>
+        <h3>Mis Reservas</h3>
         <a href="{{ url('traveler/reservation') }}" class="btn btn-primary">Crear nueva reserva</a>
     </div>
 
-    <h3>Mis Reservas</h3>
+    <!-- Mostrar el mensaje de éxito -->
+    @if (session('success'))
+        <div class="alert alert-success mt-3">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>ID Reserva</th>
+                <th>tipo de reserva</th>
                 <th>Nombre del Hotel</th>
-                <th>Email del Hotel</th>
                 <th>Fecha de la Reserva</th>
+                <th>Cantidad de Viajeros</th>
             </tr>
         </thead>
         <tbody>
             @forelse($reservations as $reservation)
-            <tr>
-                <td>{{ $reservation->id }}</td>
-                <td>{{ $reservation->hotel->name }}</td>
-                <td>{{ $reservation->hotel->location }}</td>
-                <td>{{ $reservation->booking_date }}</td>
-            </tr>
+                <tr>
+                    <td>{{ $reservation->id }}</td>
+                    <td>{{ $reservation->reservation_type }}</td>
+                    <td>{{ $reservation->hotel->name }}</td>
+                    <td>
+                        @if($reservation->reservation_type == 'aeropuerto_hotel')
+                        
+                        {{ date('d-m-Y', strtotime($reservation->arrival_date)) }}
+                        @endif
+                        @if($reservation->reservation_type == 'hotel_aeropuerto')
+                        {{ date('d-m-Y', strtotime($reservation->flight_day)) }}
+                        @endif
+                        @if($reservation->reservation_type == 'ida_vuelta')
+                        {{ date('d-m-Y', strtotime($reservation->arrival_date))}} - {{date('d-m-Y', strtotime($reservation->flight_day)) }}
+                        @endif
+                    </td>
+                    <td>{{ $reservation->travelers_count }}</td>
+                </tr>
             @empty
-            <tr>
-                <td colspan="4" class="text-center">No tienes reservas asociadas.</td>
-            </tr>
+                <tr>
+                    <td colspan="5" class="text-center">No tienes reservas asociadas.</td>
+                </tr>
             @endforelse
         </tbody>
     </table>

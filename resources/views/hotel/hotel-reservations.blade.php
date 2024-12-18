@@ -20,25 +20,38 @@
         <thead>
             <tr>
                 <th>ID Reserva</th>
-                <th>Hotel</th>
-                <th>Nombre del Viajero</th>
-                <th>Email del Viajero</th>
+                <th>tipo de reserva</th>
+                <th>Nombre del Hotel</th>
                 <th>Fecha de la Reserva</th>
+                <th>Cantidad de Viajeros</th>
+                <th>Datos del viajero</th>
             </tr>
         </thead>
         <tbody>
             @forelse($reservations as $reservation)
-            <tr>
-                <td>{{ $reservation->id }}</td>
-                <td>{{ $reservation->hotel->name }}</td>
-                <td>{{ $reservation->traveler->user->name }}</td>
-                <td>{{ $reservation->traveler->user->email }}</td>
-                <td>{{ $reservation->booking_date }}</td>
-            </tr>
+                <tr>
+                    <td>{{ $reservation->id }}</td>
+                    <td>{{ $reservation->reservation_type }}</td>
+                    <td>{{ $reservation->hotel->name }}</td>
+                    <td>
+                        @if($reservation->reservation_type == 'aeropuerto_hotel')
+                        
+                        {{ date('d-m-Y', strtotime($reservation->arrival_date)) }}
+                        @endif
+                        @if($reservation->reservation_type == 'hotel_aeropuerto')
+                        {{ date('d-m-Y', strtotime($reservation->flight_day)) }}
+                        @endif
+                        @if($reservation->reservation_type == 'ida_vuelta')
+                        {{ date('d-m-Y', strtotime($reservation->arrival_date))}} - {{date('d-m-Y', strtotime($reservation->flight_day)) }}
+                        @endif
+                    </td>
+                    <td>{{ $reservation->travelers_count }}</td>
+                    <td>{{ $reservation->traveler->user->name }} - {{ $reservation->traveler->user->email }}</td>
+                </tr>
             @empty
-            <tr>
-                <td colspan="4" class="text-center">No hay reservas asociadas a tu hotel.</td>
-            </tr>
+                <tr>
+                    <td colspan="5" class="text-center">No tienes reservas asociadas.</td>
+                </tr>
             @endforelse
         </tbody>
     </table>

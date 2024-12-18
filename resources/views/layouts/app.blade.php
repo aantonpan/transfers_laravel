@@ -40,10 +40,14 @@
                             {{ Auth::user()->name }} ({{ ucfirst(Auth::user()->role) }})
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <!-- Opción de mi perfil -->
+                            @if(Auth::user()->role == 'traveler')
                             <li><a class="dropdown-item" href="{{ route('traveler.profile') }}">Mi perfil</a></li>
-                            <!-- Opción de cerrar sesión -->
-                            <li>
+                            @elseif(Auth::user()->role == 'hotel')
+                            <li><a class="dropdown-item" href="{{ route('hotel.profile') }}">Mi perfil</a></li>
+                            @elseif(Auth::user()->role == 'admin')
+                            <li><a class="dropdown-item" href="{{ route('admin.profile') }}">Mi perfil</a></li>
+                            @endif
+                                            <li>
                                 <form method="post" action="/logout" class="m-0">
                                     @csrf
                                     <button type="submit" class="dropdown-item">Cerrar sesión</button>
@@ -63,7 +67,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-light text-center py-3">
+    <footer class="bg-light text-center py-3 fixed-bottom">
         <div class="container-fluid">
             <p>&copy; 2024 PHP POWER</p>
         </div>

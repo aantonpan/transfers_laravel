@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Hotel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class HotelsController extends Controller
 {
@@ -43,31 +44,72 @@ class HotelsController extends Controller
         if (Auth::check() && Auth::user()->role === 'hotel') {
             $user = Auth::user();
             $hotels = Hotel::where('user_id', $user->id)->get();
-            // echo(json_encode($reservations));die;
+        
             return view('hotel.hotel-dashboard', compact('hotels'));
         }
         // Si no tiene acceso, redirigir con error
         return redirect()->route('welcome')->withErrors(['error' => 'Acceso denegado: No tienes permisos.']);
     }
-
-
-    public function update(Request $request, $id)
+    public function profile()
     {
-        // Validar los datos
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'ubicacion' => 'required|string|max:255',
-        ]);
-    
-        // Buscar y actualizar el hotel
-        $hotel = Hotel::findOrFail($id);
-        $hotel->name = $request->name;
-        $hotel->location = $request->ubicacion;
-        $hotel->save();
-    
-        // Redirigir con un mensaje de éxito
-        return redirect()->route('admin.hotels')->with('success', 'Hotel actualizado correctamente');
+        // Obtener el usuario logueado
+        $user = Auth::user();
+
+        // Obtener el viajero asociado al usuario
+        $traveler = Traveler::where('user_id', $user->id)->first();
+        $hotel = Hotel::where('user_id', $user->id)->first();
+        // Retornar la vista con los datos del viajero
+        return view('profile.hotelProfile', compact('traveler', 'user', 'hotel'));
     }
+
+    public function updateProfile(Request $request)
+    {
+        // Validar los campos del perfil
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . Auth::id(),
+        'name' => 'required|string|max:255',
+    ]);
+    
+    // Obtener el usuario autenticado
+    $user = Auth::user();
+    
+    $hotels = Hotel::where('user_id', $user->id)->get();
+
+    // Actualizar los datos del perfil
+    $user->name = $request->name;
+    $user->email = $request->email;
+
+    
+    
+    $user->save();
+    
+
+        // Redirigir con éxito
+        return back()->with('success', 'Perfil actualizado correctamente.');
+    }
+    public function updatePassword(Request $request)
+{
+    // Validar los campos de la contraseña
+    $request->validate([
+        'current_password' => 'required|string|min:4',
+        'new_password' => 'required|string|min:4',  // Asegúrate de que las contraseñas coinciden
+    ]);
+    
+    // Obtener el usuario autenticado
+    $user = Auth::user();
+    // Verificar si la contraseña actual es correcta
+    if (Hash::check($request->current_password, $user->password)) {
+        
+    // Cambiar la contraseña, asegurándote de usar Hash::make() para cifrar
+    $user->password = Hash::make($request->new_password); 
+    $user->save();
+    
+    // Redirigir con un mensaje de éxito
+    return back()->with('success', 'Contraseña actualizada correctamente.');
+    }
+    return back()->withErrors(['current_password' => 'La contraseña actual es incorrecta.']);
+}
 
     // Eliminar hotel
     public function destroy($id)
@@ -130,6 +172,7 @@ public function storeReservation(Request $request)
         'flight_time' => 'nullable',
         'pickup_time' => 'nullable',
         'flight_number_return' => 'nullable|string',
+
     ]);
 
     // Obtener el viajero de la tabla travelers

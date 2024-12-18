@@ -23,6 +23,7 @@
             <tr>
                 <th>ID del hotel</th>
                 <th>Nombre del hotel</th>
+                <th>Ubicación</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +31,7 @@
             <tr>
                 <td>{{ $hotel->id }}</td>
                 <td>{{ $hotel->name }}</td>
+                <td>{{ $hotel->location }}</td>
             </tr>
             @empty
             <tr>
