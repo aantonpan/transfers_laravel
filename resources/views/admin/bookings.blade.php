@@ -3,15 +3,16 @@
 @section('title', 'Gestión de Reservas')
 
 @section('content')
-    <div class="container">
+    <div class="container mb-5">
         <h1 class="mb-4">Lista de Reservas</h1>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Usuario</th>
-                    <th>Hotel</th>
-                    <th>Fecha</th>
+                    <th>Tipo de reserva</th>
+                    <th>Nombre del hotel</th>
+                    <th>Fecha de la reserva</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -20,8 +21,20 @@
                     <tr>
                         <td>{{ $booking->id }}</td>
                         <td>{{ $booking->traveler->user->name }}</td>
+                        <td>{{ $booking->reservation_type }}</td>
                         <td>{{ $booking->hotel->name }}</td>
-                        <td>{{ $booking->booking_date }}</td>
+                        <td>
+                        @if($booking->reservation_type == 'aeropuerto_hotel')
+                        
+                        {{ date('d-m-Y', strtotime($booking->arrival_date)) }}
+                        @endif
+                        @if($booking->reservation_type == 'hotel_aeropuerto')
+                        {{ date('d-m-Y', strtotime($booking->flight_day)) }}
+                        @endif
+                        @if($booking->reservation_type == 'ida_vuelta')
+                        {{ date('d-m-Y', strtotime($booking->arrival_date))}} - {{date('d-m-Y', strtotime($booking->flight_day)) }}
+                        @endif
+                    </td>
                         <td>
                             <button class="btn btn-warning" onclick=editBooking(@json($booking))>
                                 Editar

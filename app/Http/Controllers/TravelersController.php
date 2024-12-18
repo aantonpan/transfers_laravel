@@ -21,6 +21,7 @@ class TravelersController extends Controller
         return view('admin.travelers', compact('travelers'));
     }
 
+    
     // Actualizar información del viajero
     public function updateProfile(Request $request)
     {

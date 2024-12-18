@@ -17,7 +17,8 @@ class AdminController extends Controller
     // Dashboard principal del administrador
     public function index()
     {
-        return view('admin.admin-dashboard');
+        $journeys = Journey::all();
+        return view('admin.admin-dashboard', compact('journeys'));
     }
 
     // Listado de hoteles
@@ -41,7 +42,14 @@ class AdminController extends Controller
         $travelers = Traveler::all();
         return view('admin.bookings', compact('bookings', 'hotels', 'travelers'));
     }
-
+    public function updateUser(Request $request, $id)
+    {
+        User::where('id', $id)->update([
+            'name'=>$request->name,
+            'email'=>$request->email,
+        ]);
+        return back()->with('success', 'Perfil actualizado correctamente.');
+    }
     public function profile()
     {
         // Obtener el usuario logueado

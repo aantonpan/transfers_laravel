@@ -43,7 +43,7 @@
 <div class="modal fade" id="editTravelerModal" tabindex="-1" aria-labelledby="editTravelerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
     <form id="editTravelerForm" method="POST">
-    @csrf
+            @csrf
             @method('PUT')
             <div class="modal-content">
                 <div class="modal-header">

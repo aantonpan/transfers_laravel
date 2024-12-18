@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/hotels/{id}', [AdminController::class, 'deleteUser'])->name('admin.hotels.delete');
         
         Route::get('/travelers', [AdminController::class, 'travelers'])->name('admin.travelers');
-        Route::put('/travelers/{id}', [TravelersController::class, 'update'])->name('admin.travelers.update');
+        Route::put('/travelers/{id}', [AdminController::class, 'updateUser'])->name('admin.travelers.update');
         Route::delete('/travelers/{id}', [AdminController::class, 'deleteUser'])->name('admin.travelers.delete');
         
 
