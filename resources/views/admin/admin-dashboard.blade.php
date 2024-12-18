@@ -16,5 +16,6 @@
             <a href="{{ route('admin.bookings') }}" class="btn btn-warning w-100 py-3">Gestión de Reservas</a>
         </div>
     </div>
+    <div class="pt-5" id='calendar'></div>
 </div>
 @endsection
