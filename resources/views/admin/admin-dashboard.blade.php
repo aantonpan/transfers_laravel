@@ -41,7 +41,7 @@
     function mapObjects(array) {
         return array.map(item => ({
             id: item.id,
-            title: `Journey ${item.type} from ${item.origin} to ${item.destination}`,
+            title: ` ${item.traveler_mail} from ${item.origin} to ${item.destination}`,
             start: new Date(`${item.date}T${item.time}`), // Combina fecha y hora y lo convierte en objeto Date
             booking_id: item.booking_id,
             type: item.type,
@@ -90,7 +90,7 @@
                     <p><strong>Destino:</strong> ${journey.destination}</p>
                     <p><strong>Número de viajeros:</strong> ${journey.travelers_count}</p>
                     <p><strong>Email de contacto del viajero:</strong> ${journey.traveler_mail}</p>
-                `;
+                    <p><strong>Descripción de la reserva:</strong> Esta reserva corresponde a un trayecto de tipo <strong>${journey.type}</strong> realizado el <strong>${formattedDate}</strong> a las <strong>${formattedTime}</strong>. El viajero, con correo electrónico <strong>${journey.traveler_mail}</strong>, viajará desde el <strong>${journey.origin}</strong> hasta su destino el <strong>${journey.destination}</strong>. El trayecto incluye un total de <strong>${journey.travelers_count}</strong> viajeros.</p> `;
 
                 // Insertar los detalles en el modal
                 document.getElementById('journeyDetails').innerHTML = journeyDetails;
