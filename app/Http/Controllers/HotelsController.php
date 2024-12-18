@@ -19,24 +19,36 @@ class HotelsController extends Controller
         $hotels = User::where('role', 'hotel')->with('hotels')->get();
         return view('admin.hotels', compact('hotels'));
     }
-    public function reservations()
-    {
-        // Verificar si el usuario está autenticado y tiene el rol adecuado
-        if (Auth::check() && Auth::user()->role === 'hotel') {
-            $user = Auth::user();
-            $hotels = Hotel::where('user_id', $user->id)->get();
-            $reservations = [];
-            foreach ($hotels as $key => $value) {
-                $reservation = $value->getBookingsWithRelations();
-                // $reservation = Booking::where('hotel_id', $value->id)->get();
-                array_push($reservations, ...$reservation);
+    public function reservations(Request $request)
+{
+    // Verificar si el usuario está autenticado y tiene el rol adecuado
+    if (Auth::check() && Auth::user()->role === 'hotel') {
+        $user = Auth::user();
+        $hotels = Hotel::where('user_id', $user->id)->get();
+
+        $hotelId = $request->input('hotel_id');
+
+        // Filtrar reservas por el hotel seleccionado, si aplica
+        $reservations = collect();
+
+        if ($hotelId) {
+            // Obtener solo las reservas del hotel seleccionado
+            $hotel = $hotels->where('id', $hotelId)->first();
+            if ($hotel) {
+                $reservations = $hotel->getBookingsWithRelations()->sortBy('id');
             }
-            // echo(json_encode($reservations));die;
-            return view('hotel.hotel-reservations', compact('reservations'));
+        } else {
+            // Obtener reservas de todos los hoteles
+            foreach ($hotels as $hotel) {
+                $reservations = $reservations->merge($hotel->getBookingsWithRelations()->sortBy('id'));
+            }
         }
-        // Si no tiene acceso, redirigir con error
-        return redirect()->route('welcome')->withErrors(['error' => 'Acceso denegado: No tienes permisos.']);
+
+        return view('hotel.hotel-reservations', compact('reservations', 'hotels'));
     }
+
+    return redirect()->route('welcome')->withErrors(['error' => 'Acceso denegado: No tienes permisos.']);
+}
 
 
     public function dashboard()

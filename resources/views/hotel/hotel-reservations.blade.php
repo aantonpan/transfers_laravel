@@ -14,8 +14,22 @@
         </div>
 
     </div>
-    <h3>Reservas Asociadas</h3>
+    
 
+    <div class="mb-4">
+    <form action="{{ url('hotel/reservations') }}" method="GET" class="form-inline" id="hotelFilterForm">
+        <label for="hotel_id" class="mr-2">Hoteles</label>
+        <select name="hotel_id" id="hotel_id" class="form-control" onchange="document.getElementById('hotelFilterForm').submit()">
+            <option value="">Todos los hoteles</option>
+            @foreach ($hotels as $hotel)
+                <option value="{{ $hotel->id }}" {{ request('hotel_id') == $hotel->id ? 'selected' : '' }}>
+                    {{ $hotel->name }}
+                </option>
+            @endforeach
+        </select>
+    </form>
+</div>
+<h3>Reservas Asociadas</h3>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
