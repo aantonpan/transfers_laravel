@@ -37,41 +37,47 @@ class AdminController extends Controller
 
     public function bookings(Request $request)
 {
-    // Aseguramos que los datos se obtienen solo si el usuario es admin
-   
-        // Obtención de hoteles y viajeros
-        $user = Auth::user();
-        $hotels = Hotel::all();
-        $travelers = Traveler::all(); // Todos los viajeros
+    // Obtención de hoteles y viajeros
+    $hotelName = '';
+    $user = Auth::user();
+    $hotels = Hotel::all();
+    $travelers = Traveler::all(); // Todos los viajeros
 
-        $hotelId = $request->input('hotel_id'); // Obtener el hotel seleccionado desde la solicitud
+    $hotelId = $request->input('hotel_id'); // Obtener el hotel seleccionado desde la solicitud
 
-        // Obtener las reservas, inicializamos como colección vacía
-        $bookings = collect();
+    // Obtener las reservas, inicializamos como colección vacía
+    $bookings = collect();
+    $totalPrice = 0;
+    
 
-        if ($hotelId) {
-            // Si se ha seleccionado un hotel, obtener solo sus reservas
-            $hotel = $hotels->where('id', $hotelId)->first();
-            if ($hotel) {
-                // Usar el método bookings() del modelo para obtener las reservas
-                $bookings = $hotel->bookings()->with('traveler')->get()->sortBy('id');
-            }
-        } else {
-            // Si no se ha seleccionado un hotel, obtener todas las reservas de todos los hoteles
-            foreach ($hotels as $hotel) {
-                $bookings = $bookings->merge($hotel->bookings()->with('traveler')->get()->sortBy('id'));
-            }
+    if ($hotelId) {
+        // Si se ha seleccionado un hotel, obtener solo sus reservas
+        $hotel = $hotels->where('id', $hotelId)->first();
+        if ($hotel) {
+            // Obtener las reservas y sumarlas por mes
+            $bookings = $hotel->bookings()->with('traveler')->get()->sortBy('id');
+            // Calcular la suma de los precios del mes actual
+            $totalPrice = $bookings->where('created_at', '>=', now()->startOfMonth())
+                ->where('created_at', '<=', now()->endOfMonth())
+                ->sum('price_hotel');
+                $hotelName = $hotel->name;
         }
-
-        // Verifica si la colección de reservas tiene datos
-        if ($bookings->isEmpty()) {
-            // Si no hay reservas, puedes devolver un mensaje
-            return redirect()->route('admin.bookings')->withErrors(['error' => 'No hay reservas disponibles.']);
+    } else {
+        // Si no se ha seleccionado un hotel, obtener todas las reservas de todos los hoteles
+        foreach ($hotels as $hotel) {
+            $bookings = $bookings->merge($hotel->bookings()->with('traveler')->get()->sortBy('id'));
         }
-
-        // Devolver la vista con los datos
-        return view('admin.bookings', compact('bookings', 'hotels', 'travelers'));
     }
+
+    // Verifica si la colección de reservas tiene datos
+    if ($bookings->isEmpty()) {
+        // Si no hay reservas, puedes devolver un mensaje
+        return redirect()->route('admin.bookings')->withErrors(['error' => 'No hay reservas disponibles.']);
+    }
+
+    // Devolver la vista con los datos
+    return view('admin.bookings', compact('bookings', 'hotels', 'travelers', 'totalPrice', 'hotelName'));
+}
     public function updateUser(Request $request, $id)
     {
         User::where('id', $id)->update([
