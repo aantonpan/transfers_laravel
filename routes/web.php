@@ -82,7 +82,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('admin.updateProfile');
         Route::put('/profile/password', [AdminController::class, 'updatePassword'])->name('admin.updatePassword');
         Route::put('/bookings/updateBooking/{id}', [BookingsController::class, 'updateBooking'])->name('admin.updateBooking');
-        
+         
         Route::post('/bookings/createReservation', [AdminController::class, 'storeReservation'])->name('admin.createReservation.store');
     
     });
@@ -98,10 +98,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/profile', [HotelsController::class, 'updateProfile'])->name('hotel.updateProfile');
         Route::put('/profile/password', [HotelsController::class, 'updatePassword'])->name('hotel.updatePassword');
         Route::put('/hotels/{id}', [HotelsController::class, 'update'])->name('hotel.hotels.update');
-        
-        
+        Route::put('/admin/bookings/{id}', [AdminBookingController::class, 'updateBooking'])->name('admin.updateBooking');
+
         Route::delete('/hotels/{id}', [HotelsController::class, 'destroy'])->name('hotel.hotels.delete');
-       
+        Route::delete('/reservations/{id}', [HotelsController::class, 'destroy'])->name('hotel.reservations.delete');
 
 
         Route::post('/createHotel', [HotelsController::class, 'storeHotel'])->name('hotel.CreateHotel.store');

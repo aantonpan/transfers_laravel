@@ -63,6 +63,12 @@
                     <td>{{ $reservation->travelers_count }}</td>
                     <td>{{ $reservation->traveler->user->name }} - {{ $reservation->traveler->user->email }}</td>
                     <td>{{ number_format($reservation->price_hotel, 2) }} €</td>
+                <td>
+                            <button class="btn btn-warning" onclick="editBooking()">
+                                Editar
+                            </button>
+                            
+                        </td>
                 </tr>
             @empty
                 <tr>
@@ -72,4 +78,17 @@
         </tbody>
     </table>
 </div>
+
+@push('scripts')
+        <script>
+            function editBooking() {
+                const form = document.getElementById('editBookingForm');
+                form.action = "{{ route('admin.updateBooking', '') }}/" + booking.id;
+
+                new bootstrap.Modal(document.getElementById('editBookingModal')).show();
+            }
+
+            
+        </script>
+    @endpush
 @endsection

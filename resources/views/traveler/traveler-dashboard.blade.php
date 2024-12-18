@@ -48,6 +48,11 @@
                     </td>
                     <td>{{ $reservation->travelers_count }}</td>
                     <td>{{ number_format($reservation->price_total, 2) }} €</td> <!-- Precio Total -->
+                    <td>
+                            <button class="btn btn-warning" onclick="editBooking())">
+                                Editar
+                            </button>
+                        </td>
                 </tr>
             @empty
                 <tr>

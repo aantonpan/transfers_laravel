@@ -65,7 +65,7 @@
                     <label for="hotel_name">Nombre:</label>
                     <input type="text" id="hotel_name" name="name" class="form-control" required>
                     <label for="hotel_ubicacion">Ubicación:</label>
-                    <input type="text" id="hotel_ubicacion" name="ubicacion" class="form-control" required>
+                    <input type="text" id="hotel_ubicacion" name="location" class="form-control" required>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

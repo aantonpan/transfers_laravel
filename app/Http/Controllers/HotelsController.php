@@ -127,6 +127,7 @@ public function update(Request $request, $id)
 {
     // Buscar el hotel por su ID
     $hotel = Hotel::findOrFail($id);
+
     // Actualizar los campos del hotel con los datos enviados
     $hotel->update($request->only([
         'name', 
@@ -152,11 +153,7 @@ public function createHotel()
 // Guardar el nuevo hotel en la base de datos
 public function storeHotel(Request $request)
 {
-    // Validar los datos del formulario
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'location' => 'required|string|max:255',
-    ]);
+    
 
     // Crear el nuevo hotel y asociarlo al usuario autenticado (si se requiere)
     $hotel = new Hotel();
@@ -264,4 +261,28 @@ public function storeReservation(Request $request)
     // Redirigir con éxito
     return redirect()->route('hotel.reservations')->with('success', 'Reserva creada con éxito.');
 }
+public function updateReservation(Request $request, $id){
+    $reservation = Reservation::findOrFail($id);
+
+    $reservation->update($request->only([
+        'arrival_date',
+        'arrival_time',
+        'flight_number',
+        'origin_airport',
+        'flight_day',
+        'flight_time',
+        'pickup_time',
+        'flight_number_return',
+        'pickup_airport',
+        'hotel_id',
+        'travelers_count',
+        'traveler_id',
+    ]));
+
+
+    return back()->with('success', 'Reserva actualizada correctamente.');
+
+}
+
+
 }
