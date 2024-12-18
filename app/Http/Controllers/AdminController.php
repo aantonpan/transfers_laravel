@@ -35,11 +35,41 @@ class AdminController extends Controller
         return view('admin.travelers', compact('travelers'));
     }
 
-    public function bookings()
-    {
-        $bookings = Booking::with(['hotel', 'traveler'])->get();
+    public function bookings(Request $request)
+{
+    // Aseguramos que los datos se obtienen solo si el usuario es admin
+   
+        // Obtención de hoteles y viajeros
+        $user = Auth::user();
         $hotels = Hotel::all();
-        $travelers = Traveler::all();
+        $travelers = Traveler::all(); // Todos los viajeros
+
+        $hotelId = $request->input('hotel_id'); // Obtener el hotel seleccionado desde la solicitud
+
+        // Obtener las reservas, inicializamos como colección vacía
+        $bookings = collect();
+
+        if ($hotelId) {
+            // Si se ha seleccionado un hotel, obtener solo sus reservas
+            $hotel = $hotels->where('id', $hotelId)->first();
+            if ($hotel) {
+                // Usar el método bookings() del modelo para obtener las reservas
+                $bookings = $hotel->bookings()->with('traveler')->get()->sortBy('id');
+            }
+        } else {
+            // Si no se ha seleccionado un hotel, obtener todas las reservas de todos los hoteles
+            foreach ($hotels as $hotel) {
+                $bookings = $bookings->merge($hotel->bookings()->with('traveler')->get()->sortBy('id'));
+            }
+        }
+
+        // Verifica si la colección de reservas tiene datos
+        if ($bookings->isEmpty()) {
+            // Si no hay reservas, puedes devolver un mensaje
+            return redirect()->route('admin.bookings')->withErrors(['error' => 'No hay reservas disponibles.']);
+        }
+
+        // Devolver la vista con los datos
         return view('admin.bookings', compact('bookings', 'hotels', 'travelers'));
     }
     public function updateUser(Request $request, $id)
@@ -153,6 +183,7 @@ public function storeReservation(Request $request)
     $traveler = Traveler::where('user_id', $request->user_id)->first();
     $user = User::where('id', $request->user_id)->first();
     $hotel = Hotel::where('id', $request->hotel_id)->first();
+    $userType = auth()->user()->role;
     // Crear la reserva
     $booking = new Booking();
     $booking->user_id = auth()->id(); // ID del usuario logueado
@@ -170,6 +201,15 @@ public function storeReservation(Request $request)
     $booking->flight_number_return = $data['flight_number_return'] ?? null;
     $booking->pickup_airport = $data['pickup_airport'] ?? null;
     $booking->booking_date = now();
+    $booking->user_type = $userType;
+
+    if ($data['reservation_type'] === 'ida_vuelta') {
+        $booking->price_total = 40; // Precio total para ida y vuelta
+        $booking->price_hotel = 29; // Lo que recibe el hotel
+    } else {
+        $booking->price_total = 25; // Precio total para ida o vuelta
+        $booking->price_hotel = 18; // Lo que recibe el hotel
+    }
     $booking->save();
 
     
@@ -205,4 +245,5 @@ public function storeReservation(Request $request)
     // Redirigir con éxito
     return redirect()->route('admin.bookings')->with('success', 'Reserva creada con éxito.');
 }
+
 }

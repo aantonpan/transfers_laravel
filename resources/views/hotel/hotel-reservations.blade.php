@@ -37,8 +37,9 @@
                 <th>tipo de reserva</th>
                 <th>Nombre del Hotel</th>
                 <th>Fecha de la Reserva</th>
-                <th>Cantidad de Viajeros</th>
+                <th>Nº de Viajeros</th>
                 <th>Datos del viajero</th>
+                <th>Ganancia por reserva</th>
             </tr>
         </thead>
         <tbody>
@@ -61,6 +62,7 @@
                     </td>
                     <td>{{ $reservation->travelers_count }}</td>
                     <td>{{ $reservation->traveler->user->name }} - {{ $reservation->traveler->user->email }}</td>
+                    <td>{{ number_format($reservation->price_hotel, 2) }} €</td>
                 </tr>
             @empty
                 <tr>

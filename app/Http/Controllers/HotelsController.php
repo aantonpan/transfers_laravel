@@ -204,6 +204,7 @@ public function storeReservation(Request $request)
     $traveler = Traveler::where('user_id', $request->user_id)->first();
     $user = User::where('id', $request->user_id)->first();
     $hotel = Hotel::where('id', $request->hotel_id)->first();
+    $userType = auth()->user()->role;
     // Crear la reserva
     $booking = new Booking();
     $booking->user_id = auth()->id(); // ID del usuario logueado
@@ -221,9 +222,16 @@ public function storeReservation(Request $request)
     $booking->flight_number_return = $data['flight_number_return'] ?? null;
     $booking->pickup_airport = $data['pickup_airport'] ?? null;
     $booking->booking_date = now();
+    $booking->user_type = $userType;
+
+    if ($data['reservation_type'] === 'ida_vuelta') {
+        $booking->price_total = 40; // Precio total para ida y vuelta
+        $booking->price_hotel = 34; // Lo que recibe el hotel
+    } else {
+        $booking->price_total = 25; // Precio total para ida o vuelta
+        $booking->price_hotel = 21; // Lo que recibe el hotel
+    }
     $booking->save();
-
-
     // Crear trayectos
     if ($data['reservation_type'] === 'aeropuerto_hotel' || $data['reservation_type'] === 'ida_vuelta') {
         // Trayecto de ida
@@ -254,6 +262,6 @@ public function storeReservation(Request $request)
     }
 
     // Redirigir con éxito
-    return redirect()->route('hotel.dashboard')->with('success', 'Reserva creada con éxito.');
+    return redirect()->route('hotel.reservations')->with('success', 'Reserva creada con éxito.');
 }
 }

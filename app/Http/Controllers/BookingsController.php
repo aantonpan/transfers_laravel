@@ -54,4 +54,28 @@ class BookingsController extends Controller
         Booking::findOrFail($id)->delete();
         return back()->with('success', 'Reserva eliminada correctamente.');
     }
+    public function store(Request $request)
+{
+    $request->validate([
+        'reservation_type' => 'required|in:aeropuerto_hotel,hotel_aeropuerto,ida_vuelta',
+        'hotel_id' => 'required|exists:hotels,id',
+        'traveler_id' => 'required|exists:travelers,id',
+        // otras validaciones
+    ]);
+
+    // Determinar el tipo de usuario
+    $userType = Auth::user()->role; // 'traveler', 'admin', o 'hotel'
+
+    $booking = new Booking($request->all());
+    $booking->user_type = $userType;
+
+    // Calcular precios
+    $prices = $booking->calculatePrices();
+    $booking->price_total = $prices['total'];
+    $booking->price_hotel = $prices['hotel'];
+
+    $booking->save();
+
+    return redirect()->route('bookings.index')->with('success', 'Reserva creada correctamente.');
+}
 }

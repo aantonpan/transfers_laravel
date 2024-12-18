@@ -40,4 +40,31 @@ class Booking extends Model
 {
     return $this->hasMany(Journey::class , 'booking_id');
 }
+
+public function calculatePrices(): array
+{
+    // Definir los precios según el tipo de usuario y reserva
+    $prices = [
+        'traveler' => [
+            'one_way' => ['total' => 25, 'hotel' => 18],
+            'round_trip' => ['total' => 40, 'hotel' => 16],
+        ],
+        'hotel' => [
+            'one_way' => ['total' => 25, 'hotel' => 21],
+            'round_trip' => ['total' => 40, 'hotel' => 17],
+        ],
+        'admin' => [
+            'one_way' => ['total' => 25, 'hotel' => 18],
+            'round_trip' => ['total' => 40, 'hotel' => 16],
+        ],
+    ];
+
+    // Determinar el tipo de reserva (ida, vuelta, ida y vuelta)
+    $type = $this->reservation_type === 'ida_vuelta' ? 'round_trip' : 'one_way';
+
+    // Usar el tipo de usuario para calcular precios
+    $userType = $this->user_type;
+
+    return $prices[$userType][$type];
+}
 }

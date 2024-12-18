@@ -4,6 +4,20 @@
 
 @section('content')
     <div class="container mb-5">
+    <div class="mb-4">
+    <form action="{{ url('admin/bookings') }}" method="GET" class="form-inline" id="hotelFilterForm">
+        <label for="hotel_id" class="mr-2">Hoteles</label>
+        <select name="hotel_id" id="hotel_id" class="form-control" onchange="document.getElementById('hotelFilterForm').submit()">
+            <option value="">Todos los hoteles</option>
+            @foreach ($hotels as $hotel)
+                <option value="{{ $hotel->id }}" {{ request('hotel_id') == $hotel->id ? 'selected' : '' }}>
+                    {{ $hotel->name }}
+                </option>
+            @endforeach
+        </select>
+    </form>
+</div>
+
         <h1 class="mb-4">Lista de Reservas</h1>
         <table class="table table-striped">
             <thead>
@@ -13,6 +27,8 @@
                     <th>Tipo de reserva</th>
                     <th>Nombre del hotel</th>
                     <th>Fecha de la reserva</th>
+                    <th>Ganancia del hotel (€)</th> <!-- Nueva columna para el precio del hotel -->
+                    <th>Pago del viajero (€)</th> <!-- Nueva columna para el precio del viajero -->
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -24,19 +40,24 @@
                         <td>{{ $booking->reservation_type }}</td>
                         <td>{{ $booking->hotel->name }}</td>
                         <td>
-                        @if($booking->reservation_type == 'aeropuerto_hotel')
-                        
-                        {{ date('d-m-Y', strtotime($booking->arrival_date)) }}
-                        @endif
-                        @if($booking->reservation_type == 'hotel_aeropuerto')
-                        {{ date('d-m-Y', strtotime($booking->flight_day)) }}
-                        @endif
-                        @if($booking->reservation_type == 'ida_vuelta')
-                        {{ date('d-m-Y', strtotime($booking->arrival_date))}} - {{date('d-m-Y', strtotime($booking->flight_day)) }}
-                        @endif
-                    </td>
+                            @if($booking->reservation_type == 'aeropuerto_hotel')
+                                {{ date('d-m-Y', strtotime($booking->arrival_date)) }}
+                            @endif
+                            @if($booking->reservation_type == 'hotel_aeropuerto')
+                                {{ date('d-m-Y', strtotime($booking->flight_day)) }}
+                            @endif
+                            @if($booking->reservation_type == 'ida_vuelta')
+                                {{ date('d-m-Y', strtotime($booking->arrival_date))}} - {{date('d-m-Y', strtotime($booking->flight_day)) }}
+                            @endif
+                        </td>
+                        <!-- Mostrar el precio total del hotel -->
+                        <td>{{ number_format($booking->price_hotel, 2) }} €</td> 
+
+                        <!-- Mostrar el precio total del viajero -->
+                        <td>{{ number_format($booking->price_total, 2) }} €</td> 
+
                         <td>
-                            <button class="btn btn-warning" onclick=editBooking(@json($booking))>
+                            <button class="btn btn-warning" onclick="editBooking(@json($booking))">
                                 Editar
                             </button>
                             <form action="{{ route('admin.bookings.delete', $booking) }}" method="POST"
@@ -51,7 +72,7 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-center gap-3">
-            <!-- Botón para añadir nuevo hotel -->
+            <!-- Botón para añadir nueva reserva -->
             <a href="{{ url('admin/bookings/createReservation') }}" class="btn btn-success ml-3">Añadir nueva reserva</a>
             <a href="{{ url('admin/dashboard') }}" class="btn btn-secondary">Volver atrás</a>
         </div>
@@ -144,13 +165,13 @@
                         @foreach ($travelers as $traveler)
                             {{-- La variable $travelers contiene usuarios de la tabla travelers --}}
                             <option value="{{ $traveler->id }}" data-email="{{ $traveler->user->email }}"
+
                                 data-name="{{ $traveler->user->name }}">
                                 {{ $traveler->user->name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-
 
                 <!-- Contenedor oculto para los detalles del traveler -->
                 <div id="traveler_details" class="d-none">
@@ -199,8 +220,6 @@
                 document.getElementById('flight_day').value = booking.flight_day;
                 document.getElementById('flight_time').value = booking.flight_time;
                 document.getElementById('pickup_time').value = booking.pickup_time;
-
-
             }
 
             function confirmDelete(button) {
@@ -216,48 +235,6 @@
                         button.closest('form').submit();
                     }
                 });
-            }
-        </script>
-    @endpush
-
-    @push('scripts')
-        <script>
-            function handleReservationType() {
-                const reservationType = document.getElementById('reservation_type').value;
-
-                // Ocultar todos los campos
-                document.querySelectorAll('.reservation-fields').forEach(field => field.classList.add('d-none'));
-
-                // Mostrar los campos correspondientes
-                if (reservationType === 'aeropuerto_hotel') {
-                    document.getElementById('aeropuerto_hotel_fields').classList.remove('d-none');
-                } else if (reservationType === 'hotel_aeropuerto') {
-                    document.getElementById('hotel_aeropuerto_fields').classList.remove('d-none');
-                } else if (reservationType === 'ida_vuelta') {
-                    document.getElementById('aeropuerto_hotel_fields').classList.remove('d-none');
-                    document.getElementById('hotel_aeropuerto_fields').classList.remove('d-none');
-                }
-            }
-
-            function updateTravelerDetails() {
-                const travelerSelect = document.getElementById('traveler_id');
-                const selectedOption = travelerSelect.options[travelerSelect.selectedIndex];
-                const travelerDetails = document.getElementById('traveler_details');
-
-                // Si hay un viajero seleccionado
-                if (selectedOption.value) {
-                    // Rellenar los detalles del viajero
-                    document.getElementById('traveler_name').value = selectedOption.dataset.name || '';
-                    document.getElementById('traveler_email').value = selectedOption.dataset.email || '';
-
-                    // Mostrar el contenedor de detalles
-                    travelerDetails.classList.remove('d-none');
-                } else {
-                    // Ocultar el contenedor de detalles y limpiar los valores
-                    travelerDetails.classList.add('d-none');
-                    document.getElementById('traveler_name').value = '';
-                    document.getElementById('traveler_email').value = '';
-                }
             }
         </script>
     @endpush

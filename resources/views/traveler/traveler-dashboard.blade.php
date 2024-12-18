@@ -22,10 +22,11 @@
         <thead>
             <tr>
                 <th>ID Reserva</th>
-                <th>tipo de reserva</th>
+                <th>Tipo de Reserva</th>
                 <th>Nombre del Hotel</th>
                 <th>Fecha de la Reserva</th>
                 <th>Cantidad de Viajeros</th>
+                <th>Precio de la reserva (€)</th> <!-- Nueva columna -->
             </tr>
         </thead>
         <tbody>
@@ -36,21 +37,21 @@
                     <td>{{ $reservation->hotel->name }}</td>
                     <td>
                         @if($reservation->reservation_type == 'aeropuerto_hotel')
-                        
-                        {{ date('d-m-Y', strtotime($reservation->arrival_date)) }}
+                            {{ date('d-m-Y', strtotime($reservation->arrival_date)) }}
                         @endif
                         @if($reservation->reservation_type == 'hotel_aeropuerto')
-                        {{ date('d-m-Y', strtotime($reservation->flight_day)) }}
+                            {{ date('d-m-Y', strtotime($reservation->flight_day)) }}
                         @endif
                         @if($reservation->reservation_type == 'ida_vuelta')
-                        {{ date('d-m-Y', strtotime($reservation->arrival_date))}} - {{date('d-m-Y', strtotime($reservation->flight_day)) }}
+                            {{ date('d-m-Y', strtotime($reservation->arrival_date)) }} - {{ date('d-m-Y', strtotime($reservation->flight_day)) }}
                         @endif
                     </td>
                     <td>{{ $reservation->travelers_count }}</td>
+                    <td>{{ number_format($reservation->price_total, 2) }} €</td> <!-- Precio Total -->
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="text-center">No tienes reservas asociadas.</td>
+                    <td colspan="6" class="text-center">No tienes reservas asociadas.</td>
                 </tr>
             @endforelse
         </tbody>

@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function () {
         
         Route::get('/bookings/createReservation', [AdminController::class, 'createReservation'])->name('admin.createReservation');
         Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
-
+        Route::get('/reservations', [AdminController::class, 'reservations'])->name('admin.reservations');
         
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('admin.updateProfile');
         Route::put('/profile/password', [AdminController::class, 'updatePassword'])->name('admin.updatePassword');
