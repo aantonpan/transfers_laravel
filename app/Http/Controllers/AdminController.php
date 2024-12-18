@@ -33,11 +33,12 @@ class AdminController extends Controller
         return view('admin.travelers', compact('travelers'));
     }
 
-    // Listado de reservas
     public function bookings()
     {
         $bookings = Booking::with(['hotel', 'traveler'])->get();
-        return view('admin.bookings', compact('bookings'));
+        $hotels = Hotel::all();
+        $travelers = Traveler::all();
+        return view('admin.bookings', compact('bookings', 'hotels', 'travelers'));
     }
 
     public function profile()

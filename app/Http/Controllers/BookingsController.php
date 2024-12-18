@@ -25,7 +25,27 @@ class BookingsController extends Controller
         return back()->with('success', 'Reserva actualizada correctamente.');
     }
 
-    
+    public function updateBooking(Request $request, $id){
+        $reservation = Booking::findOrFail($id);
+
+        $reservation->update($request->only([
+            'arrival_date',
+            'arrival_time',
+            'flight_number',
+            'origin_airport',
+            'flight_day',
+            'flight_time',
+            'pickup_time',
+            'flight_number_return',
+            'hotel_id',
+            'travelers_count',
+            'traveler_id',
+        ]));
+
+
+        return back()->with('success', 'Reserva actualizada correctamente.');
+
+    }
 
     // Eliminar reserva
     public function destroy($id)
