@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Traveler;
 use App\Models\Hotel;
 use App\Models\Booking;
+use App\Models\Journey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -119,11 +120,12 @@ public function store(Request $request)
         'flight_time' => 'nullable',
         'pickup_time' => 'nullable',
         'flight_number_return' => 'nullable|string',
+        'pickup_airport' => 'nullable|string',
     ]);
 
     // Obtener el viajero autenticado
     $user = Auth::user();
-     
+    $hotel = Hotel::where('id', $request->hotel_id)->first();
     $traveler = Traveler::where('user_id', $user->id)->first();
     // Crear la reserva
     $booking = new Booking();
@@ -140,8 +142,39 @@ public function store(Request $request)
     $booking->flight_time = $data['flight_time'] ?? null;
     $booking->pickup_time = $data['pickup_time'] ?? null;
     $booking->flight_number_return = $data['flight_number_return'] ?? null;
+    $booking->pickup_airport = $data['pickup_airport'] ?? null;
     $booking->booking_date = now();
     $booking->save();
+
+    // Crear trayectos
+    if ($data['reservation_type'] === 'aeropuerto_hotel' || $data['reservation_type'] === 'ida_vuelta') {
+        // Trayecto de ida
+        $journey = new Journey();
+        $journey->booking_id = $booking->id;
+        $journey->type = 'ida';
+        $journey->date = $data['arrival_date'];
+        $journey->time = $data['arrival_time'];
+        $journey->origin = $data['origin_airport'];
+        $journey->destination = $hotel->name;
+        $journey->travelers_count = $data['travelers_count'];
+        $journey->traveler_mail = $user->email;
+        $journey->save();
+    }
+
+    if ($data['reservation_type'] === 'hotel_aeropuerto' || $data['reservation_type'] === 'ida_vuelta') {
+        // Trayecto de vuelta
+        $journey = new Journey();
+        $journey->booking_id = $booking->id;
+        $journey->type = 'vuelta';
+        $journey->date = $data['flight_day'];
+        $journey->time = $data['pickup_time'];
+        $journey->origin = $hotel->name;
+        $journey->destination = $data['pickup_airport'];
+        $journey->travelers_count = $data['travelers_count'];
+        $journey->traveler_mail = $user->email;
+        $journey->save();
+    }
+
 
     return redirect()->route('traveler.dashboard')->with('success', 'Reserva creada correctamente.');
 }

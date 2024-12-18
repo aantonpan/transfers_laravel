@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Traveler;
+use App\Models\Journey;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Hotel;
@@ -159,12 +160,12 @@ public function createReservation()
 {
     // Obtener todos los hoteles disponibles para la reserva
     $user = Auth::user();
-    $travelers = User::where('role', 'traveler')->get();
+    $users = User::where('role', 'traveler')->get();
     // Filtrar los hoteles asociados al usuario autenticado
     $hotels = Hotel::where('user_id', $user->id)->get();
     
 
-    return view('hotel.hotel-createReservation', compact('hotels', 'travelers'));
+    return view('hotel.hotel-createReservation', compact('hotels', 'users'));
 }
 
 // Almacenar la nueva reserva en la base de datos
@@ -175,7 +176,7 @@ public function storeReservation(Request $request)
         'reservation_type' => 'required|string',
         'hotel_id' => 'required|exists:hotels,id',
         'travelers_count' => 'required|integer|min:1',
-        'traveler_id' => 'required|exists:users,id', // Validar que el viajero existe en la tabla de usuarios
+        'user_id' => 'required|exists:users,id', // Validar que el viajero existe en la tabla de usuarios
         'arrival_date' => 'nullable|date',
         'arrival_time' => 'nullable',
         'flight_number' => 'nullable|string',
@@ -184,12 +185,13 @@ public function storeReservation(Request $request)
         'flight_time' => 'nullable',
         'pickup_time' => 'nullable',
         'flight_number_return' => 'nullable|string',
+        'pickup_airport' => 'nullable|string',
 
     ]);
-
     // Obtener el viajero de la tabla travelers
-    $traveler = Traveler::where('user_id', $data['traveler_id'])->first();
-
+    $traveler = Traveler::where('user_id', $request->user_id)->first();
+    $user = User::where('id', $request->user_id)->first();
+    $hotel = Hotel::where('id', $request->hotel_id)->first();
     // Crear la reserva
     $booking = new Booking();
     $booking->user_id = auth()->id(); // ID del usuario logueado
@@ -205,8 +207,39 @@ public function storeReservation(Request $request)
     $booking->flight_time = $data['flight_time'] ?? null;
     $booking->pickup_time = $data['pickup_time'] ?? null;
     $booking->flight_number_return = $data['flight_number_return'] ?? null;
+    $booking->pickup_airport = $data['pickup_airport'] ?? null;
     $booking->booking_date = now();
     $booking->save();
+
+
+    // Crear trayectos
+    if ($data['reservation_type'] === 'aeropuerto_hotel' || $data['reservation_type'] === 'ida_vuelta') {
+        // Trayecto de ida
+        $journey = new Journey();
+        $journey->booking_id = $booking->id;
+        $journey->type = 'ida';
+        $journey->date = $data['arrival_date'];
+        $journey->time = $data['arrival_time'];
+        $journey->origin = $data['origin_airport'];
+        $journey->destination = $hotel->name;
+        $journey->travelers_count = $data['travelers_count'];
+        $journey->traveler_mail = $user->email;
+        $journey->save();
+    }
+
+    if ($data['reservation_type'] === 'hotel_aeropuerto' || $data['reservation_type'] === 'ida_vuelta') {
+        // Trayecto de vuelta
+        $journey = new Journey();
+        $journey->booking_id = $booking->id;
+        $journey->type = 'vuelta';
+        $journey->date = $data['flight_day'];
+        $journey->time = $data['pickup_time'];
+        $journey->origin = $hotel->name;
+        $journey->destination = $data['pickup_airport'];
+        $journey->travelers_count = $data['travelers_count'];
+        $journey->traveler_mail = $user->email;
+        $journey->save();
+    }
 
     // Redirigir con éxito
     return redirect()->route('hotel.dashboard')->with('success', 'Reserva creada con éxito.');

@@ -22,8 +22,7 @@ class Booking extends Model
         'flight_time',
         'pickup_time',
         'flight_number_return',
-        'hotel_id',
-        'traveler_id',
+        'pickup_airport',
     ];
 
     // Relación con el hotel (Usuario con rol "hotel")
@@ -37,4 +36,8 @@ class Booking extends Model
     {
         return $this->belongsTo(Traveler::class, 'traveler_id');
     }
+    public function journeys()
+{
+    return $this->hasMany(Journey::class , 'booking_id');
+}
 }

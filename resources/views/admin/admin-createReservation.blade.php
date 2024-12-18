@@ -60,6 +60,10 @@
                     <label for="flight_number_return" class="form-label">Número de Vuelo</label>
                     <input type="text" class="form-control" id="flight_number_return" name="flight_number_return">
                 </div>
+                <div class="mb-3">
+                <label for="pickup_airport" class="form-label">Aeropuerto de recogida</label>
+                <input type="text" class="form-control" id="pickup_airport" name="pickup_airport">
+            </div>
             </div>
 
             <!-- Hotel de Destino/Recogida -->
@@ -82,12 +86,12 @@
 
             <!-- Selección de Traveler -->
             <div class="mb-3">
-                <label for="traveler_id" class="form-label">Seleccionar Viajero</label>
-                <select class="form-control" id="traveler_id" name="traveler_id" required
+                <label for="user_id" class="form-label">Seleccionar Viajero</label>
+                <select class="form-control" id="user_id" name="user_id" required
                     onchange="updateTravelerDetails()">
                     <option value="">Selecciona un viajero</option>
-                    @foreach ($travelers as $user)
-                        {{-- La variable $travelers contiene usuarios de la tabla users --}}
+                    @foreach ($users as $user)
+                        {{-- La variable $users contiene usuarios de la tabla users --}}
                         <option value="{{ $user->id }}" data-email="{{ $user->email }}"
                             data-name="{{ $user->name }}">
                             {{ $user->name }}

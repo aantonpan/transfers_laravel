@@ -60,11 +60,15 @@
                 <label for="flight_number_return" class="form-label">Número de Vuelo</label>
                 <input type="text" class="form-control" id="flight_number_return" name="flight_number_return">
             </div>
+            <div class="mb-3">
+                <label for="pickup_airport" class="form-label">Aeropuerto de recogida</label>
+                <input type="text" class="form-control" id="pickup_airport" name="pickup_airport">
+            </div>
         </div>
 
-        <!-- Hotel de Destino/Recogida -->
+        <!-- Hotel de Destino -->
         <div class="mb-3">
-            <label for="hotel_id" class="form-label">Hotel de Destino/Recogida</label>
+            <label for="hotel_id" class="form-label">Hotel de Destino</label>
             <select class="form-control" id="hotel_id" name="hotel_id" required>
                 <option value="">Selecciona un hotel</option>
                 @foreach($hotels as $hotel)

@@ -37,6 +37,7 @@ class BookingsController extends Controller
             'flight_time',
             'pickup_time',
             'flight_number_return',
+            'pickup_airport',
             'hotel_id',
             'travelers_count',
             'traveler_id',
